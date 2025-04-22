@@ -1,17 +1,18 @@
 using Microsoft.EntityFrameworkCore;
+using Models;
 
-public class ObjectDbContext : MainDbContext
+public class ObjectDbContext : DbContext
 {
     public ObjectDbContext(DbContextOptions<ObjectDbContext> options) : base(options) { }
 
-    public DbSet<Object> Objects { get; set; }
+    public DbSet<CustomObject> CustomObjects { get; set; }
     public DbSet<ObjectProperties> ObjectProperties { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Object>()
+        modelBuilder.Entity<CustomObject>()
             .HasMany(o => o.ObjectProperties)
             .WithOne(p => p.Object)
-            .HasForeignKey(p => p.ObjectID);
+            .HasForeignKey(p => p.ObjectId);
     }
 }
