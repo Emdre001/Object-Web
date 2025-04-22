@@ -1,6 +1,8 @@
+
+namespace Models;
 public class ObjectProperties
 {
-    public Guid ObjectID { get; set; }
-    public string Field { get; set; }
+    public Guid ObjectId { get; set; }
+    public string Key { get; set; }
     public string Value { get; set; }
 }
