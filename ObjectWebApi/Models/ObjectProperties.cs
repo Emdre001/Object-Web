@@ -1,10 +1,10 @@
 
 namespace Models;
-public class ObjectProperties
+public class ObjectProperties : IObjectProperties
 {
-    public Guid ObjectId { get; set; }
-    public string Key { get; set; }
-    public string Value { get; set; }
+    public virtual Guid ObjectId { get; set; }
+    public virtual string Key { get; set; }
+    public virtual string Value { get; set; }
 
-    public CustomObject Object { get; set; }
+    public virtual List<CustomObject> Object { get; set; }
 }
