@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "ewPApaKoPMzxoZJmgjQEov4KJVkJXIeIldnJBQj1GI4=",
+  "Source": "ObjectWebApi",
+  "BasePath": "_content/ObjectWebApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
