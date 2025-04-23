@@ -1,7 +1,5 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
-
 using Models;
 using Models.Dto;
 using DbModels;
@@ -40,7 +38,6 @@ public class ObjectPropertiesRepos
         var resp = await query.FirstOrDefaultAsync<IObjectProperties>();
         return new ResponseItemDto<IObjectProperties>()
         {
-            DbConnectionKeyUsed = _dbContext.dbConnection,
             Item = resp
         };
     }
@@ -111,7 +108,7 @@ public class ObjectPropertiesRepos
 
         return new ResponseItemDto<IObjectProperties>()
         {
-            DbConnectionKeyUsed = _dbContext.dbConnection,
+
             Item = item
         };
     }

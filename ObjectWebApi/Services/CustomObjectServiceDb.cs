@@ -9,6 +9,7 @@ public class CustomObjectServiceDb : ICustomObjectService
 {
     private readonly CustomObjectRepos _customObjectRepo;
     private readonly ObjectPropertiesRepos _objectPropertiesRepo;
+    private readonly ILogger<CustomObjectServiceDb> _logger;    
 
     public CustomObjectServiceDb( CustomObjectRepos customObjectRepo, ObjectPropertiesRepos objectPropertiesRepo, ILogger<CustomObjectServiceDb> logger)
     {

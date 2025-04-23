@@ -10,5 +10,12 @@ public class ObjectPropertiesDto
     public virtual Guid? ObjectId { get; set; } = null;
 
     public ObjectPropertiesDto () { }
-    
+
+    public ObjectPropertiesDto(IObjectProperties org)
+    {
+        PropertyId = org.PropertyId;
+        Key = org.Key;
+
+        ObjectId = org?.CustomObject?.ObjectId;
+    }
 }

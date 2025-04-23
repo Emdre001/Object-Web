@@ -12,5 +12,12 @@ public class CustomObjectDto
 
     public CustomObjectDto() { }
 
-
+    public CustomObjectDto(ICustomObject org)
+    {
+        ObjectId = org.ObjectId;
+        ObjectName = org.ObjectName;
+        ObjectType = org.ObjectType;
+     
+        PropertiesId = org.ObjectProperties?.Select(p => p.PropertyId).ToList();
+    }
 }

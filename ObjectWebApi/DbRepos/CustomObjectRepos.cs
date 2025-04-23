@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-
 using Models;
 using Models.Dto;
 using DbModels;
@@ -39,7 +38,6 @@ public class CustomObjectRepos
         var resp =  await query.FirstOrDefaultAsync<ICustomObject>();
         return new ResponseItemDto<ICustomObject>()
         {
-            DbConnectionKeyUsed = _dbContext.dbConnection,
             Item = resp
         };
     }
@@ -55,27 +53,24 @@ public class CustomObjectRepos
         else
         {
             query = _dbContext.CustomObjects.AsNoTracking()
-                .Include(i => i.ObjectPropertiesDbM)
+                .Include(i => i.ObjectPropertiesDbM);
         }
 
         return new ResponsePageDto<ICustomObject>()
-        {/*
-            DbConnectionKeyUsed = _dbContext.dbConnection,
+        {
+            //DbConnectionKeyUsed = _dbContext.dbConnection,
             DbItemsCount = await query
-
             //Adding filter functionality
             .Where(i => (i.Seeded == seeded) && 
-                        (i.Name.ToLower().Contains(filter) ||
-                         i.City.ToLower().Contains(filter) ||
-                         i.Country.ToLower().Contains(filter))).CountAsync(),
+                        (i.ObjectName.ToLower().Contains(filter) ||
+                         i.ObjectType.ToLower().Contains(filter))).CountAsync(),
 
             PageItems = await query
 
             //Adding filter functionality
             .Where(i => (i.Seeded == seeded) && 
-                        (i.Name.ToLower().Contains(filter) ||
-                         i.City.ToLower().Contains(filter) ||
-                         i.Country.ToLower().Contains(filter)))
+                         (i.ObjectName.ToLower().Contains(filter) ||
+                         i.ObjectType.ToLower().Contains(filter)))
 
             //Adding paging
             .Skip(pageNumber * pageSize)
@@ -85,7 +80,7 @@ public class CustomObjectRepos
 
             PageNr = pageNumber,
             PageSize = pageSize
-            */
+            
         };
     }
     public async Task<ResponseItemDto<ICustomObject>> DeleteItemAsync(Guid id)
@@ -106,7 +101,6 @@ public class CustomObjectRepos
 
         return new ResponseItemDto<ICustomObject>()
         {
-            DbConnectionKeyUsed = _dbContext.dbConnection,
             Item = item
         };
     }
