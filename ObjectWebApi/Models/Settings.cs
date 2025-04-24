@@ -5,6 +5,7 @@ public class SettingsEntity
 {
     [Key]
     public Guid SettingsId { get; set; }
+    public string SettingEntityName { get; set; }
     public string JsonData { get; set; } = string.Empty;
 }
 public class Settings
@@ -13,7 +14,8 @@ public class Settings
 }
 
 public class Application
-{
+{   
+    public Guid AppId { get; set; }
     public string Name { get; set; } = string.Empty;
     public List<MyObject> ApplicationObject { get; set; } = new();
     public List<ParentReference> Parents { get; set; } = new();

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ObjectWebApi.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20250424115017_AddPrimaryKeyToSettingsEntity")]
-    partial class AddPrimaryKeyToSettingsEntity
+    [Migration("20250424115710_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
