@@ -37,4 +37,12 @@ public class ObjectController : ControllerBase
         await _repository.DeleteObjectAsync(objectId);
         return NoContent();
     }
+
+    [HttpGet("by-type/{objectType}")]
+    public async Task<IActionResult> GetObjectsByType(string objectType)
+    {
+        var objects = await _repository.GetObjectsByTypeAsync(objectType);
+        return Ok(objects);
+    }
+
 }
