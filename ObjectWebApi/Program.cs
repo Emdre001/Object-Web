@@ -1,34 +1,36 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using DbContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Load config from appsettings.json
-builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+// Configure Azure SQL Database connection
+builder.Services.AddDbContext<MainDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AzureSqlConnection")));
 
-// Read the user secret ID from config
-var userSecretId = builder.Configuration["UserSecrets:Id"];
-if (!string.IsNullOrEmpty(userSecretId))
-{
-    builder.Configuration.AddUserSecrets(userSecretId);
-}
+// Register the repository
+builder.Services.AddScoped<ObjectRepository>();
 
+// Add controllers and Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyObject API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
 });
 
 var app = builder.Build();
 
+// Enable Swagger middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        c.RoutePrefix = string.Empty;
+    });
 }
-
-app.UseRouting();
-app.UseAuthorization();
 
 app.MapControllers();
 

@@ -1,39 +1,43 @@
 using Microsoft.EntityFrameworkCore;
 using Models;
-using Models.Dto;
-using DbModels;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Configuration;
 
-namespace DbContext
+namespace DbContext;
+
+public class MainDbContext : Microsoft.EntityFrameworkCore.DbContext
 {
-    public class ObjectDbContext : Microsoft.EntityFrameworkCore.DbContext
+    public DbSet<MyObject> MyObjects { get; set; }
+    public DbSet<ObjectProperties> ObjectProperties { get; set; }
+
+    public MainDbContext(DbContextOptions<MainDbContext> options) : base(options) { }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public DbSet<CustomObjectDbM> CustomObjects { get; set; }
-        public DbSet<ObjectPropertiesDbM> ObjectProperties { get; set; }
-
-        public ObjectDbContext() { }
-
-        public ObjectDbContext(DbContextOptions<ObjectDbContext> options)
-            : base(options) { }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        modelBuilder.Entity<MyObject>(entity =>
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                // Build configuration (loads appsettings and secrets)
-                var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                    .AddUserSecrets<ObjectDbContext>() // Or use .AddUserSecrets("your-id") if needed
-                    .Build();
+            // Set primary key
+            entity.HasKey(o => o.ObjectId);
 
-                var connectionString = configuration.GetConnectionString("ObjectDb");
+            // Set the type and default value for ObjectId
+            entity.Property(o => o.ObjectId)
+                  .HasColumnType("uniqueidentifier")
+                  .HasDefaultValueSql("NEWID()")
+                  .ValueGeneratedOnAdd();
+        });
 
-                optionsBuilder.UseSqlServer(connectionString); // Use correct provider for your DB
-            }
-        }
+        modelBuilder.Entity<ObjectProperties>(entity =>
+        {
+            // Set composite key for ObjectProperties
+            entity.HasKey(op => new { op.ObjectId, op.Field });
+
+            // Set ObjectId property type for ObjectProperties
+            entity.Property(op => op.ObjectId)
+                  .HasColumnType("uniqueidentifier");
+        });
+
+        // Define relationships
+        modelBuilder.Entity<MyObject>()
+            .HasMany(o => o.ObjectProperties)
+            .WithOne()
+            .HasForeignKey(op => op.ObjectId);
     }
 }
-
