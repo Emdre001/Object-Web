@@ -39,6 +39,14 @@ public class ObjectRepository
         }
     }
 
+    public async Task<List<MyObject>> GetObjectsByTypeAsync(string objectType)
+    {
+        return await _context.MyObjects
+            .Include(o => o.ObjectProperties)
+            .Where(o => o.ObjectType == objectType)
+            .ToListAsync();
+    }
+
     public async Task<List<MyObject>> SearchObjectsAsync(string term)
     {
         term = term.ToLower();

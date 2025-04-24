@@ -38,6 +38,14 @@ public class ObjectController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("by-type/{objectType}")]
+    public async Task<IActionResult> GetObjectsByType(string objectType)
+    {
+        var objects = await _repository.GetObjectsByTypeAsync(objectType);
+        return Ok(objects);
+    }
+
+
 [HttpGet("searchByTerm")]
 public async Task<IActionResult> SearchObjects([FromQuery] string term)
 {
