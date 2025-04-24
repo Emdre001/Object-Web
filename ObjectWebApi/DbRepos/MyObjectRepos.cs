@@ -12,15 +12,15 @@ public class ObjectRepository
     }
 
     public async Task SaveObjectAsync(MyObject obj)
-{
-    var exists = await _context.MyObjects.AnyAsync(o => o.ObjectId == obj.ObjectId);
-    if (exists)
-        _context.MyObjects.Update(obj); // update
-    else
-        _context.MyObjects.Add(obj); // insert
+    {
+        var exists = await _context.MyObjects.AnyAsync(o => o.ObjectId == obj.ObjectId);
+        if (exists)
+            _context.MyObjects.Update(obj); // update
+        else
+            _context.MyObjects.Add(obj); // insert
 
-    await _context.SaveChangesAsync();
-}
+        await _context.SaveChangesAsync();
+    }
 
     public async Task<MyObject?> LoadObjectAsync(Guid objectId)
     {

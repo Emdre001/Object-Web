@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ObjectWebApi.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20250424091631_Initial")]
-    partial class Initial
+    [Migration("20250424115017_AddPrimaryKeyToSettingsEntity")]
+    partial class AddPrimaryKeyToSettingsEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,6 +60,21 @@ namespace ObjectWebApi.Migrations
                     b.HasKey("ObjectId", "Field");
 
                     b.ToTable("ObjectProperties");
+                });
+
+            modelBuilder.Entity("Models.SettingsEntity", b =>
+                {
+                    b.Property<Guid>("SettingsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("JsonData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SettingsId");
+
+                    b.ToTable("Settings");
                 });
 
             modelBuilder.Entity("Models.ObjectProperties", b =>

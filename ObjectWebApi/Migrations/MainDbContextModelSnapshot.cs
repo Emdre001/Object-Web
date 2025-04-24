@@ -59,6 +59,21 @@ namespace ObjectWebApi.Migrations
                     b.ToTable("ObjectProperties");
                 });
 
+            modelBuilder.Entity("Models.SettingsEntity", b =>
+                {
+                    b.Property<Guid>("SettingsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("JsonData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SettingsId");
+
+                    b.ToTable("Settings");
+                });
+
             modelBuilder.Entity("Models.ObjectProperties", b =>
                 {
                     b.HasOne("Models.MyObject", null)

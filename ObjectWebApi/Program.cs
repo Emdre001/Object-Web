@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using DbContext;
+using Filter;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddDbContext<MainDbContext>(options =>
 
 // Register the repository
 builder.Services.AddScoped<ObjectRepository>();
+builder.Services.AddScoped<SettingsRepository>(); 
 
 // Add controllers and Swagger
 builder.Services.AddControllers();
@@ -17,7 +19,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+    c.SchemaFilter<SettingsSchemaExampleFilter>();
 });
+
 
 var app = builder.Build();
 
