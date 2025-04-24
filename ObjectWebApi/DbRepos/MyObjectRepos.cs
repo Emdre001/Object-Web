@@ -38,4 +38,24 @@ public class ObjectRepository
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<List<MyObject>> SearchObjectsAsync(string term)
+    {
+        term = term.ToLower();
+
+        return await _context.MyObjects
+            .Include(o => o.ObjectProperties) // 👈 include related properties
+            .Where(o =>
+                (o.ObjectName != null && o.ObjectName.ToLower().Contains(term)) ||
+                (o.ObjectType != null && o.ObjectType.ToLower().Contains(term)) ||
+                o.ObjectId.ToString().Contains(term) ||
+                o.ObjectProperties.Any(p =>
+                    (p.Field != null && p.Field.ToLower().Contains(term)) ||
+                    (p.Value != null && p.Value.ToLower().Contains(term))
+                )
+            )
+            .ToListAsync();
+    }
+
+
 }

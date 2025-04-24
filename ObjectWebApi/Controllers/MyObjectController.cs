@@ -37,4 +37,17 @@ public class ObjectController : ControllerBase
         await _repository.DeleteObjectAsync(objectId);
         return NoContent();
     }
+
+[HttpGet("searchByTerm")]
+public async Task<IActionResult> SearchObjects([FromQuery] string term)
+{
+    if (string.IsNullOrWhiteSpace(term))
+        return BadRequest("Search term cannot be empty.");
+
+    var results = await _repository.SearchObjectsAsync(term);
+    return Ok(results);
+}
+
+
+
 }
