@@ -100,8 +100,9 @@ public async Task<IActionResult> SaveSettings([FromBody] Settings settings)
         await _repo.DeleteSettingsAsync(id);
         return NoContent();
     }
-
+/*
     [HttpPost("{settingsId:guid}/applications/{appId:guid}/add-objects")]
+    
     public async Task<IActionResult> AddObjectsToApplication(Guid settingsId, Guid appId, [FromBody] List<MyObject> newObjects)
     {
         var settings = await _repo.LoadSettingsAsync(settingsId);
@@ -114,7 +115,7 @@ public async Task<IActionResult> SaveSettings([FromBody] Settings settings)
             return NotFound($"Application with ID {appId} not found in settings.");
 
         // Add new objects to the application
-        app.ApplicationObject.AddRange(newObjects);
+        //app.ApplicationObject.AddRange(newObjects);
 
         // Save the updated settings
         await _repo.SaveSettingsAsync(settingsId, settings);
@@ -122,5 +123,54 @@ public async Task<IActionResult> SaveSettings([FromBody] Settings settings)
         // Return updated settings as response
         return Ok(settings);
     }
+*/
+
+    [HttpGet("demmo")]
+    public async Task<IActionResult> GetTestSettings()
+    {
+        // Retrieve all settings entities from the database
+        Settings settings = new Settings();
+        Application application = new Application();
+        
+        application.AppId = new Guid();
+        application.Name = "AppTest";
+        
+        ObjectType company= new ObjectType();
+        company.Name = "Company";
+
+        Field field1 = new Field();
+        field1.FieldName = "Homepage";
+        field1.Editor = "Text";
+        field1.Defaults = "";
+        company.Fields.Add(field1);
+
+        application.ObjectType.Add(company);
+
+        ObjectType person= new ObjectType();
+        person.Name = "Person";
+        person.ParentObjectTypes.Add("Company");
+
+
+        Field field2 = new Field();
+        field2.FieldName = "Phonenumber";
+        field2.Editor = "Text";
+        field2.Defaults = "";
+        person.Fields.Add(field2);
+
+        Field field3 = new Field();
+        field3.FieldName = "Active";
+        field3.Editor = "Select";
+        field3.Defaults = "True, False";
+        person.Fields.Add(field3);
+
+        application.ObjectType.Add(person);
+
+        settings.Applications.Add(application);
+        
+        return Ok(settings);
+    }
+
+
+
 }
 
