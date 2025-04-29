@@ -18,7 +18,7 @@ public class SettingsController : ControllerBase
         _context = context;
     }
 
-    // Existing GetAllSettings method: Modify to show all SettingsEntities
+    // GET all settings
     [HttpGet]
     public async Task<IActionResult> GetAllSettings()
     {
@@ -34,7 +34,7 @@ public class SettingsController : ControllerBase
         return Ok(entities);
     }
 
-    // Existing GetSettings method: Fetch specific settings by SettingsId
+    // GET specific settings by SettingsId
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetSettings(Guid id)
     {
@@ -42,7 +42,7 @@ public class SettingsController : ControllerBase
         return settings != null ? Ok(settings) : NotFound();
     }
 
-    // New GET method to get all Applications and AppIds by SettingsId
+    // GET all Applications and AppIds by SettingsId
     [HttpGet("{settingsId:guid}/applications")]
     public async Task<IActionResult> GetApplicationsBySettingsId(Guid settingsId)
     {
@@ -63,70 +63,48 @@ public class SettingsController : ControllerBase
         return Ok(applicationsWithAppIds);
     }
 
+    //POST a new setting
     [HttpPost]
-public async Task<IActionResult> SaveSettings([FromBody] Settings settings)
-{
-    var settingsId = Guid.NewGuid(); // Generate a new unique SettingsId
-
-    // Set SettingEntityName based on logic (for example, using the first application's Name or other properties)
-    var settingEntityName = settings.Applications.FirstOrDefault()?.Name ?? "Enter Name Here"; // Example logic
-
-    // Serialize settings to JSON data
-    var jsonData = JsonSerializer.Serialize(settings);
-
-    // Create a new SettingsEntity with the generated SettingsId and SettingEntityName
-    var settingsEntity = new SettingsEntity
+    public async Task<IActionResult> SaveSettings([FromBody] Settings settings)
     {
-        SettingsId = settingsId,
-        SettingEntityName = settingEntityName,
-        JsonData = jsonData 
-    };
+        var settingsId = Guid.NewGuid(); // Generate a new unique SettingsId
 
-    // Add the SettingsEntity to the DbContext and save it to the database
-    _context.Settings.Add(settingsEntity);
-    await _context.SaveChangesAsync(); // Persist the new SettingsEntity
+        // Set SettingEntityName based on logic (for example, using the first application's Name or other properties)
+        var settingEntityName = settings.Applications.FirstOrDefault()?.Name ?? "Enter Name Here"; // Example logic
 
-    // Save the settings using the repository method
-    await _repo.SaveSettingsAsync(settingsId, settings);
+        // Serialize settings to JSON data
+        var jsonData = JsonSerializer.Serialize(settings);
 
-    // Return a CreatedAtAction response with the new SettingsId and the saved settings
-    return CreatedAtAction(nameof(GetSettings), new { id = settingsId }, settings);
-}
+        // Create a new SettingsEntity with the generated SettingsId and SettingEntityName
+        var settingsEntity = new SettingsEntity
+        {
+            SettingsId = settingsId,
+            SettingEntityName = settingEntityName,
+            JsonData = jsonData 
+        };
 
+        // Add the SettingsEntity to the DbContext and save it to the database
+        _context.Settings.Add(settingsEntity);
+        await _context.SaveChangesAsync(); // Persist the new SettingsEntity
 
+        // Save the settings using the repository method
+        await _repo.SaveSettingsAsync(settingsId, settings);
+
+        // Return a CreatedAtAction response with the new SettingsId and the saved settings
+        return CreatedAtAction(nameof(GetSettings), new { id = settingsId }, settings);
+    }
+
+    //DELETE all settings
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteSettings(Guid id)
     {
         await _repo.DeleteSettingsAsync(id);
         return NoContent();
     }
-/*
-    [HttpPost("{settingsId:guid}/applications/{appId:guid}/add-objects")]
-    
-    public async Task<IActionResult> AddObjectsToApplication(Guid settingsId, Guid appId, [FromBody] List<MyObject> newObjects)
-    {
-        var settings = await _repo.LoadSettingsAsync(settingsId);
-        if (settings == null)
-            return NotFound($"Settings with ID {settingsId} not found.");
 
-        // Find the application by appId
-        var app = settings.Applications.FirstOrDefault(a => a.AppId == appId);
-        if (app == null)
-            return NotFound($"Application with ID {appId} not found in settings.");
-
-        // Add new objects to the application
-        //app.ApplicationObject.AddRange(newObjects);
-
-        // Save the updated settings
-        await _repo.SaveSettingsAsync(settingsId, settings);
-
-        // Return updated settings as response
-        return Ok(settings);
-    }
-*/
-
-    [HttpGet("demmo")]
-    public async Task<IActionResult> GetTestSettings()
+    //POST test settings
+    [HttpPost("createDemoSetting")]
+    public async Task<IActionResult> CreateTestSettings()
     {
         // Retrieve all settings entities from the database
         Settings settings = new Settings();
@@ -170,7 +148,50 @@ public async Task<IActionResult> SaveSettings([FromBody] Settings settings)
         return Ok(settings);
     }
 
+    // GET test settings
+    [HttpGet("getDemoSetting")]
+    public async Task<IActionResult> GetTestSettings()
+    {
+        // Create the same demo settings as in the POST method
+        Settings settings = new Settings();
+        Application application = new Application();
+        
+        application.AppId = new Guid();
+        application.Name = "AppTest";
+        
+        ObjectType company = new ObjectType();
+        company.Name = "Company";
 
+        Field field1 = new Field();
+        field1.FieldName = "Homepage";
+        field1.Editor = "Text";
+        field1.Defaults = "";
+        company.Fields.Add(field1);
+
+        application.ObjectType.Add(company);
+
+        ObjectType person = new ObjectType();
+        person.Name = "Person";
+        person.ParentObjectTypes.Add("Company");
+
+        Field field2 = new Field();
+        field2.FieldName = "Phonenumber";
+        field2.Editor = "Text";
+        field2.Defaults = "";
+        person.Fields.Add(field2);
+
+        Field field3 = new Field();
+        field3.FieldName = "Active";
+        field3.Editor = "Select";
+        field3.Defaults = "True, False";
+        person.Fields.Add(field3);
+
+        application.ObjectType.Add(person);
+
+        settings.Applications.Add(application);
+
+        return Ok(settings);
+    }
 
 }
 
