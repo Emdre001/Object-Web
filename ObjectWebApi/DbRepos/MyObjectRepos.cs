@@ -102,5 +102,10 @@ public class ObjectRepository
         }
         return ObjList;
     }
+    public async Task SaveManyObjectsAsync(List<MyObject> objects)
+    {
+        await _context.MyObjects.AddRangeAsync(objects);
+        await _context.SaveChangesAsync();
+    }
 
 }

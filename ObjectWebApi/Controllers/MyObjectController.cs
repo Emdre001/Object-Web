@@ -70,52 +70,56 @@ public class ObjectController : ControllerBase
         }
     }
 
-    // Your existing method (can be moved to a service class if needed)
     private async Task<List<MyObject>> CreateTestData()
     {
         var ObjList = new List<MyObject>(); 
+
         for (int i = 0; i < 10; i++)
         {
-            MyObject customer = new MyObject();
-            customer.ObjectId = Guid.NewGuid();
-            customer.ObjectName = $"Company {i}";
-            customer.ObjectType = "Company";
-
-            ObjectProperties CustomerProp = new ObjectProperties();
-            CustomerProp.Field = "Home page";
-            CustomerProp.Value = $"www.company{i}.se";
-            customer.ObjectProperties.Add(CustomerProp);
-
-            ObjList.Add(customer);
+            var customer = new MyObject
+            {
+                ObjectId = Guid.NewGuid(),
+                ObjectName = $"Company {i}",
+                ObjectType = "Company",
+                ObjectProperties = new List<ObjectProperties>
+                {
+                    new ObjectProperties
+                    {
+                        ObjectId = Guid.NewGuid(),
+                        Field = "Home page",
+                        Value = $"www.company{i}.se"
+                    }
+                },
+                Childrens = new List<MyObject>()
+            };
 
             for (int j = 0; j < 5; j++)
             {
-                MyObject person = new MyObject();
-                person.ObjectId = Guid.NewGuid();
-                person.ObjectName = $"Person {j} {customer.ObjectName}";
-                person.ObjectType = "Employee";
+                var person = new MyObject
+                {
+                    ObjectId = Guid.NewGuid(),
+                    ObjectName = $"Person {j} {customer.ObjectName}",
+                    ObjectType = "Employee",
+                    ObjectProperties = new List<ObjectProperties>
+                    {
+                        new ObjectProperties
+                        {
+                            ObjectId = Guid.NewGuid(), 
+                            Field = "Mobile",
+                            Value = "070"
+                        }
+                    },
+                    Parents = new List<MyObject> { customer }
+                };
 
-                ObjectProperties Prop = new ObjectProperties();
-                Prop.Field = "Mobile";
-                Prop.Value = "070";
-                person.ObjectProperties.Add(Prop);
-
-                //person.ParentId.Add(customer.ObjectId);
-
+                customer.Childrens.Add(person);
                 ObjList.Add(person);
             }
+
+            ObjList.Add(customer);
         }
 
-        foreach (var obj in ObjList)
-        {
-        await _repository.SaveObjectAsync(obj);
-        }
-
-        await Task.CompletedTask; // Simulate async work
-        
+        await _repository.SaveManyObjectsAsync(ObjList);
         return ObjList;
     }
-    
-
-
 }
