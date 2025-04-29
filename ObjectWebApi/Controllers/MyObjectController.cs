@@ -56,7 +56,7 @@ public class ObjectController : ControllerBase
         return Ok(results);
     }
  
-      [HttpGet("create")]
+    [HttpGet("create")]
     public async Task<ActionResult<List<MyObject>>> RunCreateTestData()
     {
         try

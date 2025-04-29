@@ -9,7 +9,6 @@ public class MyObject
     public List<ObjectProperties> ObjectProperties { get; set; } = new();
 
     // Self-referencing parent-child relationship
-
     public List<MyObject> Parents { get; set; } // Navigation property to Parent
     public List<MyObject> Childrens { get; set; } = new(); // Navigation property to Children
 }

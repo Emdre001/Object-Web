@@ -83,7 +83,6 @@ public class ObjectRepository
 
             ObjList.Add(customer);
 
-
             for (int j = 0; j < 5; j++)
             {
                 MyObject Person = new MyObject();
@@ -94,8 +93,6 @@ public class ObjectRepository
                 Prop.Field = "Mobile";
                 Prop.Value = "070";
                 Person.ObjectProperties.Add(Prop);
-
-                //Person.ParentId.Add(customer.ObjectId);
                 
                 ObjList.Add(Person);
             }        
