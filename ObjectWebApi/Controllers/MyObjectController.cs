@@ -46,16 +46,76 @@ public class ObjectController : ControllerBase
     }
 
 
-[HttpGet("searchByTerm")]
-public async Task<IActionResult> SearchObjects([FromQuery] string term)
-{
-    if (string.IsNullOrWhiteSpace(term))
-        return BadRequest("Search term cannot be empty.");
+    [HttpGet("searchByTerm")]
+    public async Task<IActionResult> SearchObjects([FromQuery] string term)
+    {
+        if (string.IsNullOrWhiteSpace(term))
+            return BadRequest("Search term cannot be empty.");
 
-    var results = await _repository.SearchObjectsAsync(term);
-    return Ok(results);
-}
+        var results = await _repository.SearchObjectsAsync(term);
+        return Ok(results);
+    }
+ 
+      [HttpGet("create")]
+    public async Task<ActionResult<List<MyObject>>> RunCreateTestData()
+    {
+        try
+        {
+            var result = await CreateTestData();  // Call your async method
+            return Ok(result);  // Returns the list as JSON
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error generating test data: {ex.Message}");
+        }
+    }
 
+    // Your existing method (can be moved to a service class if needed)
+    private async Task<List<MyObject>> CreateTestData()
+    {
+        var ObjList = new List<MyObject>(); 
+        for (int i = 0; i < 10; i++)
+        {
+            MyObject customer = new MyObject();
+            customer.ObjectId = Guid.NewGuid();
+            customer.ObjectName = $"Company {i}";
+            customer.ObjectType = "Company";
+
+            ObjectProperties CustomerProp = new ObjectProperties();
+            CustomerProp.Field = "Home page";
+            CustomerProp.Value = $"www.company{i}.se";
+            customer.ObjectProperties.Add(CustomerProp);
+
+            ObjList.Add(customer);
+
+            for (int j = 0; j < 5; j++)
+            {
+                MyObject person = new MyObject();
+                person.ObjectId = Guid.NewGuid();
+                person.ObjectName = $"Person {j} {customer.ObjectName}";
+                person.ObjectType = "Employee";
+
+                ObjectProperties Prop = new ObjectProperties();
+                Prop.Field = "Mobile";
+                Prop.Value = "070";
+                person.ObjectProperties.Add(Prop);
+
+                //person.ParentId.Add(customer.ObjectId);
+
+                ObjList.Add(person);
+            }
+        }
+
+        foreach (var obj in ObjList)
+        {
+        await _repository.SaveObjectAsync(obj);
+        }
+
+        await Task.CompletedTask; // Simulate async work
+        
+        return ObjList;
+    }
+    
 
 
 }

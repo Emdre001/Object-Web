@@ -50,11 +50,16 @@ namespace ObjectWebApi.Migrations
                     b.Property<string>("Field")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<Guid?>("MyObjectObjectId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ObjectId", "Field");
+
+                    b.HasIndex("MyObjectObjectId");
 
                     b.ToTable("ObjectProperties");
                 });
@@ -78,12 +83,40 @@ namespace ObjectWebApi.Migrations
                     b.ToTable("Settings");
                 });
 
+            modelBuilder.Entity("MyObjectRelation", b =>
+                {
+                    b.Property<Guid>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ChildId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ParentId", "ChildId");
+
+                    b.HasIndex("ChildId");
+
+                    b.ToTable("MyObjectRelation", (string)null);
+                });
+
             modelBuilder.Entity("Models.ObjectProperties", b =>
                 {
                     b.HasOne("Models.MyObject", null)
                         .WithMany("ObjectProperties")
-                        .HasForeignKey("ObjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("MyObjectObjectId");
+                });
+
+            modelBuilder.Entity("MyObjectRelation", b =>
+                {
+                    b.HasOne("Models.MyObject", null)
+                        .WithMany()
+                        .HasForeignKey("ChildId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Models.MyObject", null)
+                        .WithMany()
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 

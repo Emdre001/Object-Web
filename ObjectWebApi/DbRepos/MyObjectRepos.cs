@@ -19,6 +19,7 @@ public class ObjectRepository
         else
             _context.MyObjects.Add(obj); // insert
 
+    
         await _context.SaveChangesAsync();
     }
 
@@ -65,5 +66,41 @@ public class ObjectRepository
             .ToListAsync();
     }
 
+    public async Task<List<MyObject>> CreateTestData()
+    {
+        var ObjList = new List<MyObject>(); 
+        for (int i = 0; i < 10; i++)
+        {
+            MyObject customer= new MyObject();
+            customer.ObjectId = new Guid();
+            customer.ObjectName = $"Company + {i}";
+            customer.ObjectType = "Company";
+
+            ObjectProperties CustomerProp = new ObjectProperties();
+            CustomerProp.Field = "Home page";
+            CustomerProp.Value = $"www.company{i}.se";
+            customer.ObjectProperties.Add(new ObjectProperties());
+
+            ObjList.Add(customer);
+
+
+            for (int j = 0; j < 5; j++)
+            {
+                MyObject Person = new MyObject();
+                Person.ObjectName = $"Person + {i} {customer.ObjectName}";
+                Person.ObjectType = "Employee";
+
+                ObjectProperties Prop = new ObjectProperties();
+                Prop.Field = "Mobile";
+                Prop.Value = "070";
+                Person.ObjectProperties.Add(Prop);
+
+                //Person.ParentId.Add(customer.ObjectId);
+                
+                ObjList.Add(Person);
+            }        
+        }
+        return ObjList;
+    }
 
 }

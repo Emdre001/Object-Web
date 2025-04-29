@@ -32,9 +32,27 @@ public class MainDbContext : Microsoft.EntityFrameworkCore.DbContext
     });
 
     modelBuilder.Entity<MyObject>()
-        .HasMany(o => o.ObjectProperties)
-        .WithOne()
-        .HasForeignKey(op => op.ObjectId);
+        .HasMany(e => e.Childrens)
+        .WithMany(e => e.Parents)
+        .UsingEntity<Dictionary<string, object>>(
+            "MyObjectRelation",
+            j => j
+                .HasOne<MyObject>()
+                .WithMany()
+                .HasForeignKey("ChildId")
+                .OnDelete(DeleteBehavior.Restrict),
+            j => j
+                .HasOne<MyObject>()
+                .WithMany()
+                .HasForeignKey("ParentId")
+                .OnDelete(DeleteBehavior.Restrict),
+            j =>
+            {
+                j.HasKey("ParentId", "ChildId");
+                j.ToTable("MyObjectRelation");
+            }
+        );
+   
 
     // 🛠 Här är fixen för SettingsEntity
     modelBuilder.Entity<SettingsEntity>(entity =>
