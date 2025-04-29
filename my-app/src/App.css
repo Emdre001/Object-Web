@@ -36,3 +36,36 @@
     transform: rotate(360deg);
   }
 }
+.button-group {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.btn {
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 50px; /* extra rundad */
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.customer-btn {
+  background-color: #61dafb; 
+}
+
+.customer-btn:hover {
+  background-color: #21a1f1;
+}
+
+.person-btn {
+  background-color: #eaa6f8;
+}
+
+.person-btn:hover {
+  background-color: #c877d8;
+}
+
+
