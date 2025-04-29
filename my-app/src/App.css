@@ -49,23 +49,23 @@
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: white;
+  color: black;
 }
 
 .customer-btn {
-  background-color: #61dafb; 
-}
-
-.customer-btn:hover {
   background-color: #21a1f1;
 }
 
+.customer-btn:hover {
+  background-color: #197ab6;
+}
+
 .person-btn {
-  background-color: #eaa6f8;
+  background-color: #21a1f1;
 }
 
 .person-btn:hover {
-  background-color: #c877d8;
+  background-color: #197ab6;
 }
 
 
