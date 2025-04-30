@@ -13,7 +13,7 @@ function App() {
 
  const handleFetchSettings = async () => {
     try {
-      const response = await fetch('http://localhost:5291/api/Settings/getDemoSetting');
+      const response = await fetch('http://localhost:5291/api/Settings');
       if (!response.ok) throw new Error('Failed to fetch');
       const data = await response.json();
       console.log('Fetched settings:', data); 
@@ -28,7 +28,7 @@ function App() {
 
   const handleFetchObjects = async (filterType) => {
     try {
-      const response = await fetch('http://localhost:5291/api/Settings/create');
+      const response = await fetch('http://localhost:5291/api/Object/all');
       if (!response.ok) throw new Error('Failed to fetch test data');
       const data = await response.json();
   
