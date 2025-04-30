@@ -2,14 +2,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using DbContext;
 using Filter;
+using System.Text.Json;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-    });
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
+
+
     
 // Add CORS
 builder.Services.AddCors(options =>

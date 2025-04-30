@@ -1,28 +1,62 @@
 import './App.css';
 import { useState } from 'react';
 
+// Enhanced dereference function for complex structure with $id/$values references
+function dereference(obj) {
+  const idMap = new Map();
+
+  function traverse(current) {
+    if (current && typeof current === 'object') {
+      // Handle $ref resolution
+      if (current.$ref) {
+        return idMap.get(current.$ref);
+      }
+
+      // Store objects with $id in the map
+      if (current.$id) {
+        idMap.set(current.$id, current);
+      }
+
+      // Process $values array separately if it exists
+      if (Array.isArray(current.$values)) {
+        current = current.$values.map(traverse);
+      } else {
+        for (const key in current) {
+          current[key] = traverse(current[key]);
+        }
+      }
+    }
+    return current;
+  }
+
+  return traverse(obj);
+}
 
 function App() {
   const [settings, setSettings] = useState(null);
   const [error, setError] = useState(null);
   const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [selectedObjectType, setSelectedObjectType] = useState(null);
-
   const [objects, setObjects] = useState([]);
   const [objectTypeFilter, setObjectTypeFilter] = useState(null);
 
- const handleFetchSettings = async () => {
+  const handleFetchSettings = async () => {
     try {
       const response = await fetch('http://localhost:5291/api/Settings');
       if (!response.ok) throw new Error('Failed to fetch');
       const data = await response.json();
-      console.log('Fetched settings:', data); 
-      setSettings(data); // Set the settings data to state
-      setSettingsLoaded(true); 
-      setError(null); // Reset any previous errors
+      console.log('Raw settings with $ref:', data);
+
+      // Dereference the settings to resolve $ref and $values
+      const resolvedData = dereference(data);
+      console.log('Dereferenced settings:', resolvedData);
+
+      setSettings(resolvedData);
+      setSettingsLoaded(true);
+      setError(null);
     } catch (error) {
       console.error('Error fetching settings:', error);
-      setError('Settings not found, please try agaian.');
+      setError('Settings not found, please try again.');
     }
   };
 
@@ -32,17 +66,29 @@ function App() {
       if (!response.ok) throw new Error('Failed to fetch test data');
       const data = await response.json();
   
-      const filtered = data.filter(obj => obj.objectType === filterType);
+      // Extract the objects from the $values field
+      const objects = data.$values;
+  
+      // Debugging log: Log the objects we received after extracting from $values
+      console.log('Fetched objects:', objects);
+  
+      // Filter data based on the selected objectType (e.g., Person, Company)
+      const filtered = objects.filter(obj => obj.objectType === filterType);
+  
+      // Debugging log: Log the filtered objects
+      console.log('Filtered objects:', filtered);
+  
       setObjects(filtered);
       setObjectTypeFilter(filterType);
-      setSelectedObjectType(null); 
+      setSelectedObjectType(null);  // Reset selected object type for fields display
       setError(null);
     } catch (error) {
       console.error('Error fetching test data:', error);
       setError('Kunde inte hämta testdata.');
     }
   };
-
+  
+  
   return (
     <div className="App">
       <header className="top-nav">
@@ -51,38 +97,36 @@ function App() {
         </div>
       </header>
 
-        <header className="App-header">
-    <div className="main-header">
-      <h1>{settingsLoaded ? "Found Applications" : "Welcome to our app"}</h1>
-    </div>
+      <header className="App-header">
+        <div className="main-header">
+          <h1>{settingsLoaded ? "Found Applications" : "Welcome to our app"}</h1>
+        </div>
 
-      {!settingsLoaded && (
-        <>
-          <p>Press the button to start</p>
-          <div className="button-group">
-            <button className="btn settings-btn" onClick={handleFetchSettings}>⚙️ Get Settings</button>
-          </div>
-        </>
-      )}
-
-      {error && <div className="error">{error}</div>}
- {/* Object type buttons (Person/Company) */}
- {settingsLoaded && settings?.applications?.$values?.length > 0 && (
-          <div className="object-type-buttons">
-            {settings.applications.$values[0].objectType?.$values?.map((objectType, idx) => (
-              <button
-                key={idx}
-                className="btn object-btn"
-                onClick={() => handleFetchObjects(objectType.name)}
-              >
-                {objectType.name}
-              </button>
-            ))}
-          </div>
+        {!settingsLoaded && (
+          <>
+            <p>Press the button to start</p>
+            <div className="button-group">
+              <button className="btn settings-btn" onClick={handleFetchSettings}>⚙️ Get Settings</button>
+            </div>
+          </>
         )}
-     {objects.length > 0 && (
+
+        {error && <div className="error">{error}</div>}
+        {/* Object type buttons (Person/Company) */}
+        {settingsLoaded && settings?.[0]?.applications?.[0]?.objectType?.map((objectType, idx) => (
+          <button
+            key={idx}
+            className="btn object-btn"
+            onClick={() => handleFetchObjects(objectType.name)}
+          >
+            {objectType.name}
+          </button>
+        ))}
+
+        {/* Display the list of objects based on the selected objectType */}
+        {objects.length > 0 && (
           <div className="object-list">
-            <h2>{objectTypeFilter === "Employee" ? "Persons" : "Companies"} List</h2>
+            <h2>{objectTypeFilter === "Person" ? "Persons" : "Companies"} List</h2>
             <ul>
               {objects.map((obj, idx) => (
                 <li key={idx}>
@@ -99,33 +143,22 @@ function App() {
             </ul>
           </div>
         )}
-      {settingsLoaded && settings?.applications?.$values?.length > 0 && (
-        <div className="object-type-buttons">
-          {settings.applications.$values[0].objectType?.$values?.map((objectType, idx) => (
-            <button
-              key={idx}
-              className="btn object-btn"
-              onClick={() => setSelectedObjectType(objectType)}
-            >
-              {objectType.name}
-            </button>
-          ))}
-        </div>
-      )}
 
-      {selectedObjectType && (
-        <div className="object-type-fields">
-          <h3>{selectedObjectType.name} Fields:</h3>
-          <ul>
-            {selectedObjectType.fields?.$values?.map((field, fieldIdx) => (
-              <li key={fieldIdx}>
-                <strong>{field.fieldName}</strong>: {field.editor}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </header>
+        {/* Render the selected objectType's fields */}
+        {selectedObjectType && (
+          <div className="object-type-fields">
+            <h3>{selectedObjectType.name} Fields:</h3>
+            <ul>
+              {selectedObjectType.fields?.map((field, fieldIdx) => (
+                <li key={fieldIdx}>
+                  <strong>{field.fieldName}</strong>: {field.editor}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </header>
+
       <footer className="App-footer">
         <p>© {new Date().getFullYear()} Test Data Importer. All rights reserved. Made by Nicole & Emil</p>
       </footer>
@@ -134,4 +167,3 @@ function App() {
 }
 
 export default App;
-

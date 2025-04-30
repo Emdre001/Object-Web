@@ -22,7 +22,6 @@ public class SettingsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllSettings()
     {
-        // Retrieve all settings entities from the database
         var entities = await _context.Settings.ToListAsync();
 
         if (entities == null || entities.Count == 0)
@@ -30,9 +29,29 @@ public class SettingsController : ControllerBase
             return NotFound("No settings available.");
         }
 
-        // Return the list of all SettingsEntities
-        return Ok(entities);
+        var results = entities.Select(entity =>
+        {
+            Settings? deserialized = null;
+            try
+            {
+                deserialized = JsonSerializer.Deserialize<Settings>(entity.JsonData);
+            }
+            catch (JsonException ex)
+            {
+                // Handle malformed JSON if necessary
+            }
+
+            return new
+            {
+                entity.SettingsId,
+                entity.SettingEntityName,
+                Applications = deserialized?.Applications ?? new List<Application>()
+            };
+        });
+
+        return Ok(results);
     }
+
 
     // GET specific settings by SettingsId
     [HttpGet("{id:guid}")]
