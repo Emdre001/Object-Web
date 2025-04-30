@@ -52,29 +52,18 @@
   color: black;
 }
 
-.customer-btn {
-  background-color: #21a1f1;
-}
-
-.customer-btn:hover {
-  background-color: #197ab6;
-}
-
-.person-btn {
-  background-color: #21a1f1;
-}
-
-.person-btn:hover {
-  background-color: #197ab6;
-}
-
+.customer-btn,
+.person-btn,
 .settings-btn {
   background-color: #21a1f1;
 }
 
+.customer-btn:hover,
+.person-btn:hover,
 .settings-btn:hover {
   background-color: #197ab6;
 }
+
 .App-footer {
   background-color: #20232a;
   color: #aaa;

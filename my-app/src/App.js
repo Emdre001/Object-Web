@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
 
@@ -8,6 +7,9 @@ function App() {
   const [error, setError] = useState(null);
   const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [selectedObjectType, setSelectedObjectType] = useState(null);
+
+  const [objects, setObjects] = useState([]);
+  const [objectTypeFilter, setObjectTypeFilter] = useState(null);
 
  const handleFetchSettings = async () => {
     try {
@@ -21,6 +23,23 @@ function App() {
     } catch (error) {
       console.error('Error fetching settings:', error);
       setError('Settings not found, please try agaian.');
+    }
+  };
+
+  const handleFetchObjects = async (filterType) => {
+    try {
+      const response = await fetch('http://localhost:5291/api/Settings/create');
+      if (!response.ok) throw new Error('Failed to fetch test data');
+      const data = await response.json();
+  
+      const filtered = data.filter(obj => obj.objectType === filterType);
+      setObjects(filtered);
+      setObjectTypeFilter(filterType);
+      setSelectedObjectType(null); 
+      setError(null);
+    } catch (error) {
+      console.error('Error fetching test data:', error);
+      setError('Kunde inte hämta testdata.');
     }
   };
 
@@ -47,7 +66,39 @@ function App() {
       )}
 
       {error && <div className="error">{error}</div>}
-
+ {/* Object type buttons (Person/Company) */}
+ {settingsLoaded && settings?.applications?.$values?.length > 0 && (
+          <div className="object-type-buttons">
+            {settings.applications.$values[0].objectType?.$values?.map((objectType, idx) => (
+              <button
+                key={idx}
+                className="btn object-btn"
+                onClick={() => handleFetchObjects(objectType.name)}
+              >
+                {objectType.name}
+              </button>
+            ))}
+          </div>
+        )}
+     {objects.length > 0 && (
+          <div className="object-list">
+            <h2>{objectTypeFilter === "Employee" ? "Persons" : "Companies"} List</h2>
+            <ul>
+              {objects.map((obj, idx) => (
+                <li key={idx}>
+                  <strong>{obj.objectName}</strong>
+                  <ul>
+                    {obj.objectProperties?.map((prop, propIdx) => (
+                      <li key={propIdx}>
+                        {prop.field}: {prop.value}
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       {settingsLoaded && settings?.applications?.$values?.length > 0 && (
         <div className="object-type-buttons">
           {settings.applications.$values[0].objectType?.$values?.map((objectType, idx) => (
@@ -76,7 +127,7 @@ function App() {
       )}
     </header>
       <footer className="App-footer">
-        <p>© {new Date().getFullYear()} Test Data Importer. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Test Data Importer. All rights reserved. Made by Nicole & Emil</p>
       </footer>
     </div>
   );
