@@ -27,7 +27,16 @@ function App() {
   return (
     <div className="App">
     <header className="App-header">
-      <h1>{settingsLoaded ? "Found applications" : "Welcome to our app"}</h1>
+      <header className="top-nav">
+    <div className="nav-left">
+      <button className="home-btn" onClick={() => window.location.reload()}>
+        🏠 Homepage
+      </button>
+    </div>
+    <div className="nav-title">
+      {settingsLoaded ? "📁 Found Applications" : "📂 Welcome to our app"}
+    </div>
+  </header>
 
       {!settingsLoaded && (
         <>
