@@ -52,9 +52,6 @@ public class MainDbContext : Microsoft.EntityFrameworkCore.DbContext
                 j.ToTable("MyObjectRelation");
             }
         );
-   
-
-    // 🛠 Här är fixen för SettingsEntity
     modelBuilder.Entity<SettingsEntity>(entity =>
     {
         entity.HasKey(e => e.SettingsId);

@@ -40,6 +40,23 @@ public class ObjectRepository
         }
     }
 
+    public async Task DeleteAllObjectsAsync()
+    {
+        await _context.Database.ExecuteSqlRawAsync("DELETE FROM MyObjectRelation");
+        _context.ObjectProperties.RemoveRange(_context.ObjectProperties);
+        _context.MyObjects.RemoveRange(_context.MyObjects);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<MyObject>> GetAllObjectsAsync()
+    {
+        return await _context.MyObjects
+            .Include(o => o.ObjectProperties)
+            .Include(o => o.Childrens)
+            .Include(o => o.Parents)
+            .ToListAsync();
+    }
+
     public async Task<List<MyObject>> GetObjectsByTypeAsync(string objectType)
     {
         return await _context.MyObjects
@@ -99,6 +116,7 @@ public class ObjectRepository
         }
         return ObjList;
     }
+
     public async Task SaveManyObjectsAsync(List<MyObject> objects)
     {
         await _context.MyObjects.AddRangeAsync(objects);

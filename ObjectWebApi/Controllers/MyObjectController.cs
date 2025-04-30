@@ -24,6 +24,13 @@ public class ObjectController : ControllerBase
         return CreatedAtAction(nameof(GetObject), new { objectId = obj.ObjectId }, obj);
     }
 
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllObjects()
+    {
+        var allObjects = await _repository.GetAllObjectsAsync();
+        return Ok(allObjects);
+    }   
+
     [HttpGet("{objectId:guid}")]
     public async Task<IActionResult> GetObject(Guid objectId)
     {
@@ -38,13 +45,19 @@ public class ObjectController : ControllerBase
         return NoContent();
     }
 
+    [HttpDelete("DeleteAll")]
+    public async Task<IActionResult> DeleteAllObjects()
+    {
+        await _repository.DeleteAllObjectsAsync();
+        return NoContent();
+    }
+
     [HttpGet("by-type/{objectType}")]
     public async Task<IActionResult> GetObjectsByType(string objectType)
     {
         var objects = await _repository.GetObjectsByTypeAsync(objectType);
         return Ok(objects);
     }
-
 
     [HttpGet("searchByTerm")]
     public async Task<IActionResult> SearchObjects([FromQuery] string term)
@@ -99,7 +112,7 @@ public class ObjectController : ControllerBase
                 {
                     ObjectId = Guid.NewGuid(),
                     ObjectName = $"Person {j} {customer.ObjectName}",
-                    ObjectType = "Employee",
+                    ObjectType = "Person",
                     ObjectProperties = new List<ObjectProperties>
                     {
                         new ObjectProperties

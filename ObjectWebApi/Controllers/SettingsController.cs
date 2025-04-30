@@ -36,7 +36,7 @@ public class SettingsController : ControllerBase
 
     // GET specific settings by SettingsId
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetSettings(Guid id)
+    public async Task<IActionResult> GetSetting(Guid id)
     {
         var settings = await _repo.LoadSettingsAsync(id);
         return settings != null ? Ok(settings) : NotFound();
@@ -91,7 +91,7 @@ public class SettingsController : ControllerBase
         await _repo.SaveSettingsAsync(settingsId, settings);
 
         // Return a CreatedAtAction response with the new SettingsId and the saved settings
-        return CreatedAtAction(nameof(GetSettings), new { id = settingsId }, settings);
+        return CreatedAtAction(nameof(GetSetting), new { id = settingsId }, settings);
     }
 
     //DELETE all settings
@@ -106,47 +106,45 @@ public class SettingsController : ControllerBase
     [HttpPost("createDemoSetting")]
     public async Task<IActionResult> CreateTestSettings()
     {
-        // Retrieve all settings entities from the database
         Settings settings = new Settings();
-        Application application = new Application();
-        
-        application.AppId = new Guid();
-        application.Name = "AppTest";
-        
-        ObjectType company= new ObjectType();
-        company.Name = "Company";
+        Application application = new Application
+        {
+            AppId = Guid.NewGuid(),
+            Name = "AppTest"
+        };
 
-        Field field1 = new Field();
-        field1.FieldName = "Homepage";
-        field1.Editor = "Text";
-        field1.Defaults = "";
-        company.Fields.Add(field1);
+        ObjectType company = new ObjectType { Name = "Company" };
+        company.Fields.Add(new Field { FieldName = "Homepage", Editor = "Text", Defaults = "" });
+
+        ObjectType person = new ObjectType { Name = "Person" };
+        person.ParentObjectTypes.Add("Company");
+        person.Fields.Add(new Field { FieldName = "Phonenumber", Editor = "Text", Defaults = "" });
+        person.Fields.Add(new Field { FieldName = "Active", Editor = "Select", Defaults = "True, False" });
 
         application.ObjectType.Add(company);
-
-        ObjectType person= new ObjectType();
-        person.Name = "Person";
-        person.ParentObjectTypes.Add("Company");
-
-
-        Field field2 = new Field();
-        field2.FieldName = "Phonenumber";
-        field2.Editor = "Text";
-        field2.Defaults = "";
-        person.Fields.Add(field2);
-
-        Field field3 = new Field();
-        field3.FieldName = "Active";
-        field3.Editor = "Select";
-        field3.Defaults = "True, False";
-        person.Fields.Add(field3);
-
         application.ObjectType.Add(person);
-
         settings.Applications.Add(application);
-        
-        return Ok(settings);
+
+        // 💾 Save to database
+        var settingsId = Guid.NewGuid();
+        var jsonData = JsonSerializer.Serialize(settings);
+
+        var settingsEntity = new SettingsEntity
+        {
+            SettingsId = settingsId,
+            SettingEntityName = application.Name,
+            JsonData = jsonData
+        };
+
+        _context.Settings.Add(settingsEntity);
+        await _context.SaveChangesAsync();
+
+        // Optional: also store in your repository layer
+        await _repo.SaveSettingsAsync(settingsId, settings);
+
+        return CreatedAtAction(nameof(GetSetting), new { id = settingsId }, settings);
     }
+
 
     // GET test settings
     [HttpGet("getDemoSetting")]
@@ -187,7 +185,6 @@ public class SettingsController : ControllerBase
         person.Fields.Add(field3);
 
         application.ObjectType.Add(person);
-
         settings.Applications.Add(application);
 
         return Ok(settings);
