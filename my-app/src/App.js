@@ -6,16 +6,9 @@ import { useState } from 'react';
 function App() {
   const [settings, setSettings] = useState(null);
   const [error, setError] = useState(null);
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
+  const [selectedObjectType, setSelectedObjectType] = useState(null);
 
-  const handleImportCustomers = () => {
-    console.log('Import Customers clicked');
-    // Här kan du lägga till API-anrop etc.
-  };
-
-  const handleImportPersons = () => {
-    console.log('Import Persons clicked');
-    // Här kan du lägga till API-anrop etc.
-  };
  const handleFetchSettings = async () => {
     try {
       const response = await fetch('http://localhost:5291/api/Settings/getDemoSetting');
@@ -23,57 +16,57 @@ function App() {
       const data = await response.json();
       console.log('Fetched settings:', data); 
       setSettings(data); // Set the settings data to state
+      setSettingsLoaded(true); 
       setError(null); // Reset any previous errors
     } catch (error) {
       console.error('Error fetching settings:', error);
-      setError('Kunde inte hämta inställningar. Försök igen.');
+      setError('Settings not found, please try agaian.');
     }
   };
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Welcome to our app</h1>
-        <p>Press the button to start</p>
-        <div className="button-group">
-        <button className="btn customer-btn" onClick={handleImportCustomers}>🏢 Customers</button>
-          <button className="btn person-btn" onClick={handleImportPersons}>👤 Persons</button>
-          <button className="btn settings-btn" onClick={handleFetchSettings}>⚙️ Get Settings</button>
-        </div>
-        {error && <div className="error">{error}</div>}
+    <header className="App-header">
+      <h1>{settingsLoaded ? "Found applications" : "Welcome to our app"}</h1>
 
-        {settings && (
-          <div className="settings-output">
-            <h2>Applications:</h2>
-            {settings.applications?.$values?.length > 0 ? (
-              <ul>
-                 {settings.applications.$values.map((application, index) => (
-                  <li key={index}>
-                    <h3>{application.name}</h3>
-                    <h4>Object Types:</h4>
-                    <ul>
-                      {application.objectType?.$values?.map((objectType, idx) => (
-                        <li key={idx}>
-                          <strong>{objectType.name}</strong>
-                          <ul>
-                            {application.objectType?.$values?.map((field, fieldIdx) => (
-                              <li key={fieldIdx}>
-                                <strong>{field.fieldName}</strong>: {field.editor}
-                              </li>
-                            ))}
-                          </ul>
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No applications found.</p>
-            )}
+      {!settingsLoaded && (
+        <>
+          <p>Press the button to start</p>
+          <div className="button-group">
+            <button className="btn settings-btn" onClick={handleFetchSettings}>⚙️ Get Settings</button>
           </div>
-        )}
-      </header>
+        </>
+      )}
+
+      {error && <div className="error">{error}</div>}
+
+      {settingsLoaded && settings?.applications?.$values?.length > 0 && (
+        <div className="object-type-buttons">
+          {settings.applications.$values[0].objectType?.$values?.map((objectType, idx) => (
+            <button
+              key={idx}
+              className="btn object-btn"
+              onClick={() => setSelectedObjectType(objectType)}
+            >
+              {objectType.name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {selectedObjectType && (
+        <div className="object-type-fields">
+          <h3>{selectedObjectType.name} Fields:</h3>
+          <ul>
+            {selectedObjectType.fields?.$values?.map((field, fieldIdx) => (
+              <li key={fieldIdx}>
+                <strong>{field.fieldName}</strong>: {field.editor}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </header>
       <footer className="App-footer">
         <p>© {new Date().getFullYear()} Test Data Importer. All rights reserved.</p>
       </footer>
