@@ -68,4 +68,18 @@
   background-color: #197ab6;
 }
 
+.settings-btn {
+  background-color: #21a1f1;
+}
+
+.settings-btn:hover {
+  background-color: #197ab6;
+}
+.App-footer {
+  background-color: #20232a;
+  color: #aaa;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+}
 

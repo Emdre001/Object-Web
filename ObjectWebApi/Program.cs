@@ -11,6 +11,16 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
     });
     
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost3000", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 // Configure Azure SQL Database connection
 builder.Services.AddDbContext<MainDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AzureSqlConnection")));
@@ -41,7 +51,9 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty;
     });
 }
+app.UseCors("AllowLocalhost3000");
 
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
