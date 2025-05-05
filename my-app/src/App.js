@@ -64,16 +64,19 @@ function App() {
     try {
       const response = await fetch('http://localhost:5291/api/Object/all');
       if (!response.ok) throw new Error('Failed to fetch test data');
-      const data = await response.json();
-  
-      // Extract the objects from the $values field
-      const objects = data.$values;
-  
-      // Debugging log: Log the objects we received after extracting from $values
-      console.log('Fetched objects:', objects);
-  
-      // Filter data based on the selected objectType (e.g., Person, Company)
+      const rawData = await response.json();
+      const data = dereference(rawData);
+      console.log('Dereferenced object data:', data);
+
+      // Safely extract the array
+      const objects = Array.isArray(data) ? data : data?.$values;
+
+      if (!Array.isArray(objects)) {
+        throw new Error('Could not extract array of objects from dereferenced data.');
+      }
+
       const filtered = objects.filter(obj => obj.objectType === filterType);
+
   
       // Debugging log: Log the filtered objects
       console.log('Filtered objects:', filtered);
@@ -132,11 +135,19 @@ function App() {
                 <li key={idx}>
                   <strong>{obj.objectName}</strong>
                   <ul>
-                    {obj.objectProperties?.map((prop, propIdx) => (
-                      <li key={propIdx}>
-                        {prop.field}: {prop.value}
-                      </li>
-                    ))}
+                    {(() => {
+                      const propertiesArray = Array.isArray(obj.objectProperties)
+                        ? obj.objectProperties
+                        : obj.objectProperties?.$values;
+
+                      return Array.isArray(propertiesArray)
+                        ? propertiesArray.map((prop, propIdx) => (
+                            <li key={propIdx}>
+                              {prop.field}: {prop.value}
+                            </li>
+                          ))
+                        : null;
+                    })()}
                   </ul>
                 </li>
               ))}
