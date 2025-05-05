@@ -116,16 +116,19 @@ function App() {
 
         {error && <div className="error">{error}</div>}
         {/* Object type buttons (Person/Company) */}
-        {settingsLoaded && settings?.[0]?.applications?.[0]?.objectType?.map((objectType, idx) => (
-          <button
-            key={idx}
-            className="btn object-btn"
-            onClick={() => handleFetchObjects(objectType.name)}
-          >
-            {objectType.name}
-          </button>
-        ))}
-
+        {settingsLoaded && (
+        <div className="button-row">
+          {settings?.[0]?.applications?.[0]?.objectType?.map((objectType, idx) => (
+            <button
+              key={idx}
+              className="btn object-btn"
+              onClick={() => handleFetchObjects(objectType.name)}
+            >
+              {objectType.name}
+            </button>
+          ))}
+        </div>
+      )}
         {/* Display the list of objects based on the selected objectType */}
         {objects.length > 0 && (
           <div className="object-list">

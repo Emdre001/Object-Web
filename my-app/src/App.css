@@ -135,3 +135,9 @@
   font-family: 'Georgia', serif;
  
 }
+.button-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap; /* if you want them to wrap on small screens */
+  margin-top: 1em;
+}
