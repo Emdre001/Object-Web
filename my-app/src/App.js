@@ -1,5 +1,6 @@
 import './App.css';
 import { useState } from 'react';
+import Modal from './Modal'; // Import the Modal component
 
 // Enhanced dereference function for complex structure with $id/$values references
 function dereference(obj) {
@@ -36,9 +37,9 @@ function App() {
   const [settings, setSettings] = useState(null);
   const [error, setError] = useState(null);
   const [settingsLoaded, setSettingsLoaded] = useState(false);
-  const [selectedObjectType, setSelectedObjectType] = useState(null);
   const [objects, setObjects] = useState([]);
   const [objectTypeFilter, setObjectTypeFilter] = useState(null);
+  const [selectedObject, setSelectedObject] = useState(null);
 
   const handleFetchSettings = async () => {
     try {
@@ -47,7 +48,6 @@ function App() {
       const data = await response.json();
       console.log('Raw settings with $ref:', data);
 
-      // Dereference the settings to resolve $ref and $values
       const resolvedData = dereference(data);
       console.log('Dereferenced settings:', resolvedData);
 
@@ -67,23 +67,30 @@ function App() {
       const rawData = await response.json();
       const data = dereference(rawData);
       console.log('Dereferenced object data:', data);
-
+  
       // Safely extract the array
       const objects = Array.isArray(data) ? data : data?.$values;
-
+  
       if (!Array.isArray(objects)) {
         throw new Error('Could not extract array of objects from dereferenced data.');
       }
-
-      const filtered = objects.filter(obj => obj.objectType === filterType);
-
   
-      // Debugging log: Log the filtered objects
-      console.log('Filtered objects:', filtered);
+      // Filter objects based on selected filterType (e.g., Person, Company)
+      const filteredObjects = objects.filter(obj => obj.objectType === filterType);
   
-      setObjects(filtered);
+      // Sort the filtered objects by objectName in alphabetical order
+      const sortedObjects = filteredObjects.sort((a, b) => {
+        if (a.objectName.toLowerCase() < b.objectName.toLowerCase()) return -1;
+        if (a.objectName.toLowerCase() > b.objectName.toLowerCase()) return 1;
+        return 0;
+      });
+  
+      // Debugging log: Log the filtered and sorted objects
+      console.log('Sorted objects:', sortedObjects);
+  
+      setObjects(sortedObjects);
       setObjectTypeFilter(filterType);
-      setSelectedObjectType(null);  // Reset selected object type for fields display
+      setSelectedObject(null);  // Reset selected object type for fields display
       setError(null);
     } catch (error) {
       console.error('Error fetching test data:', error);
@@ -91,7 +98,7 @@ function App() {
     }
   };
   
-  
+
   return (
     <div className="App">
       <header className="top-nav">
@@ -115,7 +122,7 @@ function App() {
         )}
 
         {error && <div className="error">{error}</div>}
-        {/* Object type buttons (Person/Company) */}
+
         {settingsLoaded && settings?.[0]?.applications?.[0]?.objectType?.map((objectType, idx) => (
           <button
             key={idx}
@@ -126,48 +133,32 @@ function App() {
           </button>
         ))}
 
-        {/* Display the list of objects based on the selected objectType */}
+        {/* Display the list of objects */}
         {objects.length > 0 && (
           <div className="object-list">
             <h2>{objectTypeFilter === "Person" ? "Persons" : "Companies"} List</h2>
             <ul>
               {objects.map((obj, idx) => (
-                <li key={idx}>
-                  <strong>{obj.objectName}</strong>
-                  <ul>
-                    {(() => {
-                      const propertiesArray = Array.isArray(obj.objectProperties)
-                        ? obj.objectProperties
-                        : obj.objectProperties?.$values;
-
-                      return Array.isArray(propertiesArray)
-                        ? propertiesArray.map((prop, propIdx) => (
-                            <li key={propIdx}>
-                              {prop.field}: {prop.value}
-                            </li>
-                          ))
-                        : null;
-                    })()}
-                  </ul>
+                <li
+                  key={idx}
+                  className="object-name"
+                  style={{ cursor: 'pointer', fontWeight: selectedObject === obj ? 'bold' : 'normal' }}
+                  onClick={() => setSelectedObject(obj)} // When an object is clicked, open the modal
+                >
+                  {obj.objectName}
                 </li>
               ))}
             </ul>
           </div>
         )}
 
-        {/* Render the selected objectType's fields */}
-        {selectedObjectType && (
-          <div className="object-type-fields">
-            <h3>{selectedObjectType.name} Fields:</h3>
-            <ul>
-              {selectedObjectType.fields?.map((field, fieldIdx) => (
-                <li key={fieldIdx}>
-                  <strong>{field.fieldName}</strong>: {field.editor}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        {/* Modal to show properties */}
+        <Modal
+          isOpen={!!selectedObject}  // Show the modal if there is a selected object
+          onClose={() => setSelectedObject(null)}  // Close the modal
+          objectName={selectedObject?.objectName}
+          objectProperties={selectedObject?.objectProperties}
+        />
       </header>
 
       <footer className="App-footer">

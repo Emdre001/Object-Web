@@ -111,7 +111,7 @@ public class ObjectController : ControllerBase
                 var person = new MyObject
                 {
                     ObjectId = Guid.NewGuid(),
-                    ObjectName = $"Person {j} {customer.ObjectName}",
+                    ObjectName = $"{customer.ObjectName} Person {j}",
                     ObjectType = "Person",
                     ObjectProperties = new List<ObjectProperties>
                     {
