@@ -109,7 +109,11 @@ function App() {
 
       <header className="App-header">
         <div className="main-header">
-          <h1>{settingsLoaded ? "Found Applications" : "Welcome to our app"}</h1>
+        <h1>{settingsLoaded ? "Found Applications" : "Welcome to our app"}</h1>
+        {settingsLoaded && settings?.[0]?.settingEntityName && (
+          <h3>{settings[0].settingEntityName}</h3>
+          )}
+
         </div>
 
         {!settingsLoaded && (
