@@ -1,4 +1,5 @@
 import { useParams, Outlet } from 'react-router-dom';
+import './styles/footer.css';
 
 function AppLayout() {
   const { appID } = useParams();
@@ -11,6 +12,9 @@ function AppLayout() {
   return (
     <div>
       <Outlet />
+      <footer className="App-footer">
+        <p>© {new Date().getFullYear()} Test Data Importer. All rights reserved. Made by Nicole & Emil</p>
+      </footer>
     </div>
   );
 }
