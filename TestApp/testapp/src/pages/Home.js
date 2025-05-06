@@ -11,6 +11,7 @@ export function HomePage() {
   return (
     <div>
       <h2>Welcome to App {appID}</h2>
+      <h3>Home Page</h3>
       <button onClick={goToCompanyList}>
         Go to Company List
       </button>
