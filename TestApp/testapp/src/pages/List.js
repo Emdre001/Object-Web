@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import '../styles/list.css';
 
 export function ListPage() {
-  const { objectType } = useParams();
-  const [objects, setObjects] = useState([]);
-  const [error, setError] = useState(null);
+const { objectType, appID } = useParams();
+const [objects, setObjects] = useState([]);
+const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchObjects = async () => {
@@ -36,7 +36,7 @@ export function ListPage() {
       <ul>
         {objects.map((obj, idx) => (
           <li key={idx} className="object-name">
-            {obj.objectName}
+          <Link classname="object-link" to={`/${appID}/object/${obj.objectId}`}state={{ objectData: obj }}>{obj.objectName}</Link>
           </li>
         ))}
       </ul>
