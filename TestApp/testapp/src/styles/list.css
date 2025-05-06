@@ -1,31 +1,52 @@
-.customer-btn,
-.person-btn,
-.settings-btn {
-  background-color: #21a1f1;
+.object-list {
+  background-color: #282c34;
+  color: white;
+  min-height: 100vh;
+  padding-top: 120px; 
+  padding-bottom: 50px; 
+  padding-left: 2rem;
+  padding-right: 2rem;
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.customer-btn:hover,
-.person-btn:hover,
-.settings-btn:hover {
-  background-color: #197ab6;
+.object-list h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #21a1f1;
 }
-.btn.object-btn {
-    background-color: #21a1f1;
-    color: black;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .btn.object-btn:hover {
-    background-color: #197ab6;
-  }
-  .button-row {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap; /* if you want them to wrap on small screens */
-    margin-top: 1em;
-  }
+
+.error {
+  color: #ff6b6b;
+  margin: 1rem 0;
+  font-weight: bold;
+}
+
+.object-list ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+.object-name {
+  background-color: #3a3f47;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.object-name:hover {
+  background-color: #50565e;
+}
+
+/* Extra styling för utvald rad i framtiden, om du vill lägga till klick-event */
+.object-name.selected {
+  font-weight: bold;
+  background-color: #21a1f1;
+  color: black;
+}
