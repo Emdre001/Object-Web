@@ -44,4 +44,13 @@
   .object-detail li:hover {
     background-color: #50565e;
   }
+
+  .object-detail p {
+    margin-bottom: 0.5rem;
+  }
+  
+  .object-detail strong {
+    margin-right: 0.5rem;
+  }
+
   
