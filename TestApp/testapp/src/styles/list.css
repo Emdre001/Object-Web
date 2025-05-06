@@ -1,0 +1,31 @@
+.customer-btn,
+.person-btn,
+.settings-btn {
+  background-color: #21a1f1;
+}
+
+.customer-btn:hover,
+.person-btn:hover,
+.settings-btn:hover {
+  background-color: #197ab6;
+}
+.btn.object-btn {
+    background-color: #21a1f1;
+    color: black;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .btn.object-btn:hover {
+    background-color: #197ab6;
+  }
+  .button-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap; /* if you want them to wrap on small screens */
+    margin-top: 1em;
+  }
