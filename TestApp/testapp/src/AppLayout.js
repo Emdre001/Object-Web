@@ -1,8 +1,10 @@
 import { useParams, Outlet } from 'react-router-dom';
 import './styles/footer.css';
+import { useNavigate } from 'react-router-dom';
 
 function AppLayout() {
   const { appID } = useParams();
+  const navigate = useNavigate();
 
   // Optional: validate appID or fetch app data
   if (!isValidAppID(appID)) {
@@ -14,7 +16,7 @@ function AppLayout() {
       <Outlet />
       <header className="top-nav">
         <div className="nav-left">
-          <button className="home-btn" onClick={() => window.location.reload()}>🏠 Homepage</button>
+        <button className="home-btn" onClick={() => navigate(`/${appID}/`)}>🏠 Homepage</button>
         </div>
       </header>
       <footer className="App-footer">
@@ -29,3 +31,4 @@ function isValidAppID(id) {
 }
 
 export default AppLayout;
+

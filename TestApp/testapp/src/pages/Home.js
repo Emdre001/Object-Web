@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/App.css';
+import { useParams, Outlet } from 'react-router-dom';
+
+
 
 export function HomePage() {
   const [settings, setSettings] = useState(null);
   const [error, setError] = useState(null);
   const [settingsLoaded, setSettingsLoaded] = useState(false);
   const navigate = useNavigate();
+  const { appID } = useParams();
 
   const handleFetchSettings = async () => {
     try {
@@ -45,7 +49,7 @@ export function HomePage() {
             <button
               key={idx}
               className="btn object-btn"
-              onClick={() => navigate(`/defaultAppID/list/${objectType.name}`)}
+              onClick={() => navigate(`/${appID}/list/${objectType.name}`)}
             >
               {objectType.name}
             </button>
