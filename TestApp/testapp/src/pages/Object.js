@@ -36,7 +36,7 @@ export function ObjectPage() {
       <p><strong>Type:</strong> {objectType}</p>
       <p><strong>ID:</strong> {objectID}</p>
 
-      <h3>Egenskaper</h3>
+      <h3>Properties</h3>
       <ul>
         {objectProperties?.map((prop, index) => (
           <li key={index}>
