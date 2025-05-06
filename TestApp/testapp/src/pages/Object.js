@@ -33,8 +33,9 @@ export function ObjectPage() {
   return (
     <div className="object-detail">
       <h2>{objectName}</h2>
-      <p><strong>Typ:</strong> {objectType}</p>
-      <p><strong>ID:</strong> {objectID}</p>
+      <p className="object-id"><strong>ID:</strong> {objectID}</p>
+      <p className="object-type"><strong>Typ:</strong> {objectType}</p>
+
 
       <h3>Egenskaper</h3>
       <ul>
