@@ -36,7 +36,7 @@ const [error, setError] = useState(null);
       <ul>
         {objects.map((obj, idx) => (
           <li key={idx} className="object-name">
-          <Link classname="object-link" to={`/${appID}/object/${obj.objectId}`}state={{ objectData: obj }}>{obj.objectName}</Link>
+          <Link to={`/${appID}/object/${obj.objectId}`}state={{ objectData: obj }}>{obj.objectName}</Link>
           </li>
         ))}
       </ul>

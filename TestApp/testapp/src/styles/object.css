@@ -1,72 +1,47 @@
 .object-detail {
-    background-color: #282c34; /* Samma bakgrundsfärg som i header */
+    background-color: #282c34;
     color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    margin: 2rem auto;
-    max-width: 800px;
-    font-family: 'Georgia', serif;
+    min-height: 100vh;
+    padding: 120px 2rem 50px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
   }
   
   .object-detail h2 {
-    font-size: 2rem;
-    font-weight: 700;
+    font-size: 2.5rem;
+    color: #21a1f1;
     margin-bottom: 1rem;
-    color: #61dafb; /* Matchar den blå färgen från HomePage */
   }
   
   .object-detail p {
     font-size: 1.2rem;
-    line-height: 1.5;
     margin: 0.5rem 0;
   }
   
   .object-detail h3 {
-    font-size: 1.6rem;
-    margin-top: 1.5rem;
-    color: #61dafb; /* Blå rubrik för sektionen "Egenskaper" */
+    margin-top: 2rem;
+    color: white;
+    font-size: 1.5rem;
   }
   
   .object-detail ul {
     list-style: none;
     padding: 0;
+    margin: 0 auto;
+    max-width: 600px;
+    text-align: left;
   }
   
   .object-detail li {
-    background-color: #333; /* Dyster bakgrund för varje objekt */
-    padding: 0.8rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    background-color: #3a3f47;
+    padding: 0.75rem 1.25rem;
+    margin: 0.5rem 0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
   }
   
-  .object-detail li strong {
-    color: #21a1f1; /* Blå för fältnamn */
-  }
-  
-  .object-detail li span {
-    color: #aaa; /* Ljusare färg för värden */
-  }
-  
-  .button-group {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 2rem;
-    justify-content: center;
-  }
-  
-  .btn:hover {
-    background-color: #197ab6; /* Samma hover-färg som i HomePage */
-  }
-  
-  .error {
-    color: red;
-    font-size: 1.2rem;
-    text-align: center;
-  }
-  
-  .object-detail .loading {
-    color: #61dafb;
-    font-size: 1.5rem;
-    text-align: center;
+  .object-detail li:hover {
+    background-color: #50565e;
   }
   
