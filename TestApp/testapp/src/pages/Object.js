@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import '../styles/object.css';
 
 export function ObjectPage() {
@@ -33,10 +34,14 @@ export function ObjectPage() {
   return (
     <div className="object-detail">
       <h2>{objectName}</h2>
-      <p><strong>Type:</strong> {objectType}</p>
       <p><strong>ID:</strong> {objectID}</p>
+      <p><strong>Type:</strong> {objectType}</p>
 
-      <h3>Properties</h3>
+      <div className="properties-header">
+    <h3>Properties</h3>
+    <Link to={`edit`} className="edit-icon"><i className="fas fa-edit"></i> </Link>
+  </div>
+  
       <ul>
         {objectProperties?.map((prop, index) => (
           <li key={index}>

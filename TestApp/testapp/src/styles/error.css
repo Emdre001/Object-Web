@@ -1,0 +1,24 @@
+.not-found {
+    background-color: #282c34;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    padding: 0 2rem;
+  }
+  
+  .not-found h1 {
+    font-size: 3rem;
+    color: #d44949;
+    margin-bottom: 1rem;
+  }
+  
+  .not-found p {
+    font-size: 1.2rem;
+    color: #d44949;
+  }
+  
