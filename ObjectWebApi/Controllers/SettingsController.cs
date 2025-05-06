@@ -137,8 +137,11 @@ public class SettingsController : ControllerBase
 
         ObjectType person = new ObjectType { Name = "Person" };
         person.ParentObjectTypes.Add("Company");
-        person.Fields.Add(new Field { FieldName = "Phonenumber", Editor = "Text", Defaults = "" });
+        person.Fields.Add(new Field { FieldName = "Phonenumber", Editor = "number", Defaults = "" });
         person.Fields.Add(new Field { FieldName = "Active", Editor = "Select", Defaults = "True, False" });
+        person.Fields.Add(new Field { FieldName = "Gender", Editor = "radio", Defaults = "Male, Female, Other" });
+        person.Fields.Add(new Field { FieldName = "E-Mail", Editor = "email", Defaults = "" });
+        person.Fields.Add(new Field { FieldName = "Registration Date", Editor = "date", Defaults = "" });
 
         application.ObjectType.Add(company);
         application.ObjectType.Add(person);
@@ -192,8 +195,8 @@ public class SettingsController : ControllerBase
         person.ParentObjectTypes.Add("Company");
 
         Field field2 = new Field();
-        field2.FieldName = "Phonenumber";
-        field2.Editor = "Text";
+        field2.FieldName = "Phone Number";
+        field2.Editor = "number";
         field2.Defaults = "";
         person.Fields.Add(field2);
 
@@ -202,6 +205,24 @@ public class SettingsController : ControllerBase
         field3.Editor = "Select";
         field3.Defaults = "True, False";
         person.Fields.Add(field3);
+
+        Field field4 = new Field();
+        field4.FieldName = "Gender";
+        field4.Editor = "radio";
+        field4.Defaults = "Man, Female, Other";
+        person.Fields.Add(field4);
+
+        Field field5 = new Field();
+        field5.FieldName = "E-Mail";
+        field5.Editor = "email";
+        field5.Defaults = "";
+        person.Fields.Add(field5);
+
+        Field field6 = new Field();
+        field6.FieldName = "Registration Date";
+        field6.Editor = "date";
+        field6.Defaults = "";
+        person.Fields.Add(field6);
 
         application.ObjectType.Add(person);
         settings.Applications.Add(application);
