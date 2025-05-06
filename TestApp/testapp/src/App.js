@@ -5,6 +5,7 @@ import { ListPage } from './pages/List';
 import { ObjectPage } from './pages/Object';
 import { EditObjectPage } from './pages/EditObject';
 import { NotFound } from './pages/NotFound';
+import './styles/App.css';
 
 
 function App() {

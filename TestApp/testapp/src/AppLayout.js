@@ -10,8 +10,6 @@ function AppLayout() {
 
   return (
     <div>
-      <h1>App: {appID}</h1>
-      {/* You can add a sidebar or header here */}
       <Outlet />
     </div>
   );
