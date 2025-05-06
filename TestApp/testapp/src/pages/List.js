@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import '../styles/App.css';
+import '../styles/list.css';
 
 export function ListPage() {
   const { objectType } = useParams();
