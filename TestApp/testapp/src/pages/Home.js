@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-export function StartPage() {
+export function HomePage() {
   const { appID } = useParams();
   const navigate = useNavigate();
 
