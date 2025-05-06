@@ -62,4 +62,15 @@ public class SettingsRepository
             await _context.SaveChangesAsync();
         }
     }
+    
+    public async Task DeleteAllSettingsAsync()
+{
+    var allSettings = await _context.Settings.ToListAsync();
+    if (allSettings.Any())
+    {
+        _context.Settings.RemoveRange(allSettings);
+        await _context.SaveChangesAsync();
+    }
+}
+
 }

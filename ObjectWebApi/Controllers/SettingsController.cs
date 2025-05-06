@@ -113,11 +113,19 @@ public class SettingsController : ControllerBase
         return CreatedAtAction(nameof(GetSetting), new { id = settingsId }, settings);
     }
 
-    //DELETE all settings
+    //DELETE a setting
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteSettings(Guid id)
     {
         await _repo.DeleteSettingsAsync(id);
+        return NoContent();
+    }
+
+    //DELETE all settings
+    [HttpDelete("all")]
+    public async Task<IActionResult> DeleteAllSettings()
+    {
+        await _repo.DeleteAllSettingsAsync();
         return NoContent();
     }
 
