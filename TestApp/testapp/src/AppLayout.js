@@ -12,6 +12,11 @@ function AppLayout() {
   return (
     <div>
       <Outlet />
+      <header className="top-nav">
+        <div className="nav-left">
+          <button className="home-btn" onClick={() => window.location.reload()}>🏠 Homepage</button>
+        </div>
+      </header>
       <footer className="App-footer">
         <p>© {new Date().getFullYear()} Test Data Importer. All rights reserved. Made by Nicole & Emil</p>
       </footer>
