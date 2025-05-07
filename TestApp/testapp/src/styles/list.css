@@ -25,8 +25,11 @@
 .object-list ul {
   list-style-type: none;
   padding: 0;
-  margin: 0 auto;
-  max-width: 600px;
+  margin: 0;
+  width: 200%;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .object-name {
@@ -42,6 +45,7 @@
 
 .object-name:hover {
   background-color: #50565e;
+  transform: translateY(-2px);
 }
 
 /* Extra styling för utvald rad i framtiden, om du vill lägga till klick-event */
