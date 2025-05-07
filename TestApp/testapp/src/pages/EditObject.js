@@ -8,6 +8,8 @@ export function EditObjectPage() {
   const [objectData, setObjectData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState(null);
 
   // Reuse dereference function
   function dereference(obj) {
@@ -70,7 +72,7 @@ export function EditObjectPage() {
     const editor = field.editor?.toLowerCase() || 'text';
     const options = field.defaults ? field.defaults.split(',').map(opt => opt.trim()) : [];
     const currentValue = objectData?.objectProperties?.find(p => p.field === label)?.value || '';
-
+    
     switch (editor) {
       case 'text':
       case 'number':
@@ -143,13 +145,35 @@ export function EditObjectPage() {
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="error">{error}</div>;
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    try {
+      // Simulerad sparlogik (byt till din riktiga)
+      const res = await fetch('...', { method: 'POST', body: '' });
+  
+      if (!res.ok) {
+        throw new Error('Error, could not save!');
+      }
+  
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+  
+    } catch (err) {
+      setSaveError(err.message);
+      setTimeout(() => setSaveError(null), 3000);
+    }
+  };
+  
   return (
     <div className="edit-page">
       <h2>Edit {objectData?.objectType} (ID: {objectID})</h2>
-      <form>
+      <form onSubmit={handleSubmit}>
         {fields.map(field => renderField(field))}
-        <button type="submit">Save</button>
+        <button type="submit" className="btn object-btn">Save</button>
       </form>
+      {saveError && <div className="error-message">{saveError}</div>}
+      {saved && (<div className="success-message">✅ Saved successfully!</div>)}
     </div>
   );
 }
