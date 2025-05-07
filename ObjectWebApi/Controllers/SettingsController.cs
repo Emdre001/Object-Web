@@ -147,7 +147,7 @@ public class SettingsController : ControllerBase
         person.ParentObjectTypes.Add("Company");
         person.Fields.Add(new Field { FieldName = "Phonenumber", Editor = "number", Defaults = "" });
         person.Fields.Add(new Field { FieldName = "Active", Editor = "Select", Defaults = "True, False" });
-        person.Fields.Add(new Field { FieldName = "Gender", Editor = "radio", Defaults = "Male, Female, Other" });
+        person.Fields.Add(new Field { FieldName = "Gender", Editor = "radio", Defaults = "Female, Male, Other" });
         person.Fields.Add(new Field { FieldName = "E-Mail", Editor = "email", Defaults = "" });
         person.Fields.Add(new Field { FieldName = "Registration Date", Editor = "date", Defaults = "" });
 
@@ -217,7 +217,7 @@ public class SettingsController : ControllerBase
         Field field4 = new Field();
         field4.FieldName = "Gender";
         field4.Editor = "radio";
-        field4.Defaults = "Man, Female, Other";
+        field4.Defaults = "Female, Man, Other";
         person.Fields.Add(field4);
 
         Field field5 = new Field();

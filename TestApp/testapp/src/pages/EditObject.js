@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import '../styles/edit.css';
 
 export function EditObjectPage() {
   const { objectID } = useParams(); // this is passed from the route
@@ -143,7 +144,7 @@ export function EditObjectPage() {
   if (error) return <div className="error">{error}</div>;
 
   return (
-    <div>
+    <div className="edit-page">
       <h2>Edit {objectData?.objectType} (ID: {objectID})</h2>
       <form>
         {fields.map(field => renderField(field))}
