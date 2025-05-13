@@ -126,39 +126,83 @@ public async Task<bool> UpdateObjectAsync(MyObjectDto dto)
             .ToListAsync();
     }
 
-    public async Task<List<MyObject>> CreateTestData()
+   public async Task<List<MyObject>> CreateTestData()
     {
         var ObjList = new List<MyObject>(); 
         for (int i = 0; i < 10; i++)
         {
-            MyObject customer= new MyObject();
-            customer.ObjectId = new Guid();
-            customer.ObjectName = $"Company + {i}";
-            customer.ObjectType = "Company";
+            MyObject customer = new MyObject
+            {
+                ObjectId = Guid.NewGuid(), // Generate a new ObjectId for the customer
+                ObjectName = $"Company {i}",
+                ObjectType = "Company",
+            };
 
-            ObjectProperties CustomerProp = new ObjectProperties();
-            CustomerProp.Field = "Home page";
-            CustomerProp.Value = $"www.company{i}.se";
-            customer.ObjectProperties.Add(new ObjectProperties());
+            // Create the ObjectProperties for the customer
+            ObjectProperties customerProp = new ObjectProperties
+            {
+                ObjectId = customer.ObjectId,  // Set the ObjectId to the customer's ObjectId
+                Field = "Home page",   // Set the Field
+                Value = $"www.company{i}.se",  // Set the Value
+            };
+            customer.ObjectProperties.Add(customerProp);  // Add to the customer
 
             ObjList.Add(customer);
 
+            // Add child Person objects
             for (int j = 0; j < 5; j++)
             {
-                MyObject Person = new MyObject();
-                Person.ObjectName = $"Person + {i} {customer.ObjectName}";
-                Person.ObjectType = "Employee";
+                MyObject person = new MyObject
+                {
+                    ObjectId = Guid.NewGuid(),  // Generate a new ObjectId for each person
+                    ObjectName = $"Person {j} {customer.ObjectName}",
+                    ObjectType = "Employee",
+                };
 
-                ObjectProperties Prop = new ObjectProperties();
-                Prop.Field = "Mobile";
-                Prop.Value = "070";
-                Person.ObjectProperties.Add(Prop);
-                
-                ObjList.Add(Person);
-            }        
+                // Create and add the ObjectProperties for the person
+                person.ObjectProperties.Add(new ObjectProperties
+                {
+                    ObjectId = person.ObjectId,  // Assign the new ObjectId for the person
+                    Field = "Phonenumber",
+                    Value = "0701234567",
+                });
+
+                person.ObjectProperties.Add(new ObjectProperties
+                {
+                    ObjectId = person.ObjectId,  // Assign the new ObjectId for the person
+                    Field = "Active",
+                    Value = "True",
+                });
+
+                person.ObjectProperties.Add(new ObjectProperties
+                {
+                    ObjectId = person.ObjectId,  // Assign the new ObjectId for the person
+                    Field = "Gender",
+                    Value = "Other",
+                });
+
+                person.ObjectProperties.Add(new ObjectProperties
+                {
+                    ObjectId = person.ObjectId,  // Assign the new ObjectId for the person
+                    Field = "Email",
+                    Value = $"person{j}@company{i}.com",
+                });
+
+                person.ObjectProperties.Add(new ObjectProperties
+                {
+                    ObjectId = person.ObjectId,  // Assign the new ObjectId for the person
+                    Field = "Registration Date",
+                    Value = "01-01-2000",
+                });
+
+                ObjList.Add(person);
+            }
         }
         return ObjList;
     }
+
+
+
 
     public async Task SaveManyObjectsAsync(List<MyObject> objects)
     {

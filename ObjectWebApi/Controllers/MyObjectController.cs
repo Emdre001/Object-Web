@@ -69,13 +69,14 @@ public class ObjectController : ControllerBase
         return Ok(results);
     }
  
-    [HttpGet("create")]
-    public async Task<ActionResult<List<MyObject>>> RunCreateTestData()
+    [HttpPost("create-test-data")]
+    public async Task<IActionResult> RunCreateTestData()
     {
         try
         {
-            var result = await CreateTestData();  // Call your async method
-            return Ok(result);  // Returns the list as JSON
+            var testData = await _repository.CreateTestData();       // Create the objects
+            await _repository.SaveManyObjectsAsync(testData);        // Save to DB
+            return Ok(testData);                                     // Return the created objects
         }
         catch (Exception ex)
         {
@@ -83,58 +84,6 @@ public class ObjectController : ControllerBase
         }
     }
 
-    private async Task<List<MyObject>> CreateTestData()
-    {
-        var ObjList = new List<MyObject>(); 
-
-        for (int i = 0; i < 10; i++)
-        {
-            var customer = new MyObject
-            {
-                ObjectId = Guid.NewGuid(),
-                ObjectName = $"Company {i}",
-                ObjectType = "Company",
-                ObjectProperties = new List<ObjectProperties>
-                {
-                    new ObjectProperties
-                    {
-                        ObjectId = Guid.NewGuid(),
-                        Field = "Home page",
-                        Value = $"www.company{i}.se"
-                    }
-                },
-                Childrens = new List<MyObject>()
-            };
-
-            for (int j = 0; j < 5; j++)
-            {
-                var person = new MyObject
-                {
-                    ObjectId = Guid.NewGuid(),
-                    ObjectName = $"{customer.ObjectName} Person {j}",
-                    ObjectType = "Person",
-                    ObjectProperties = new List<ObjectProperties>
-                    {
-                        new ObjectProperties
-                        {
-                            ObjectId = Guid.NewGuid(), 
-                            Field = "Mobile",
-                            Value = "070"
-                        }
-                    },
-                    Parents = new List<MyObject> { customer }
-                };
-
-                customer.Childrens.Add(person);
-                ObjList.Add(person);
-            }
-
-            ObjList.Add(customer);
-        }
-
-        await _repository.SaveManyObjectsAsync(ObjList);
-        return ObjList;
-    }
 
     [HttpPut("{objectId:guid}")]
     public async Task<IActionResult> UpdateObject(Guid objectId, [FromBody] MyObjectDto dto)
