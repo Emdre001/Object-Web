@@ -22,42 +22,41 @@ public class ObjectRepository
     
         await _context.SaveChangesAsync();
     }
-public async Task<List<MyObject>> LoadObjectsByIdsAsync(IEnumerable<Guid> ids)
-{
-    return await _context.MyObjects
-        .Where(o => ids.Contains(o.ObjectId))
-        .ToListAsync();
-}
-
-public async Task<bool> UpdateObjectAsync(MyObjectDto dto)
-{
-    var existing = await _context.MyObjects
-        .Include(o => o.ObjectProperties)
-        .FirstOrDefaultAsync(o => o.ObjectId == dto.ObjectId);
-
-    if (existing == null)
-        return false;
-
-    // Uppdatera egenskaper
-    existing.ObjectName = dto.ObjectName;
-    existing.ObjectType = dto.ObjectType;
-
-    // Hantera ObjectProperties
-    _context.ObjectProperties.RemoveRange(existing.ObjectProperties);
-
-    var updatedProperties = dto.ObjectProperties.Select(p => new ObjectProperties
+    public async Task<List<MyObject>> LoadObjectsByIdsAsync(IEnumerable<Guid> ids)
     {
-        ObjectId = dto.ObjectId,
-        Field = p.Field,
-        Value = p.Value
-    }).ToList();
+        return await _context.MyObjects
+            .Where(o => ids.Contains(o.ObjectId))
+            .ToListAsync();
+    }
 
-    existing.ObjectProperties = updatedProperties;
+    public async Task<bool> UpdateObjectAsync(MyObjectDto dto)
+    {
+        var existing = await _context.MyObjects
+            .Include(o => o.ObjectProperties)
+            .FirstOrDefaultAsync(o => o.ObjectId == dto.ObjectId);
 
-    await _context.SaveChangesAsync();
-    return true;
-}
+        if (existing == null)
+            return false;
 
+        // Uppdatera egenskaper
+        existing.ObjectName = dto.ObjectName;
+        existing.ObjectType = dto.ObjectType;
+
+        // Hantera ObjectProperties
+        _context.ObjectProperties.RemoveRange(existing.ObjectProperties);
+
+        var updatedProperties = dto.ObjectProperties.Select(p => new ObjectProperties
+        {
+            ObjectId = dto.ObjectId,
+            Field = p.Field,
+            Value = p.Value
+        }).ToList();
+
+        existing.ObjectProperties = updatedProperties;
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
 
     public async Task<MyObject?> LoadObjectAsync(Guid objectId)
     {
@@ -89,7 +88,6 @@ public async Task<bool> UpdateObjectAsync(MyObjectDto dto)
 
         await _context.SaveChangesAsync();
     }
-
 
     public async Task<List<MyObject>> GetAllObjectsAsync()
     {
@@ -142,7 +140,7 @@ public async Task<bool> UpdateObjectAsync(MyObjectDto dto)
             ObjectProperties customerProp = new ObjectProperties
             {
                 ObjectId = customer.ObjectId,  // Set the ObjectId to the customer's ObjectId
-                Field = "Home page",   // Set the Field
+                Field = "Homepage",   // Set the Field
                 Value = $"www.company{i}.se",  // Set the Value
             };
             customer.ObjectProperties.Add(customerProp);  // Add to the customer
@@ -156,7 +154,7 @@ public async Task<bool> UpdateObjectAsync(MyObjectDto dto)
                 {
                     ObjectId = Guid.NewGuid(),  // Generate a new ObjectId for each person
                     ObjectName = $"Person {j} {customer.ObjectName}",
-                    ObjectType = "Employee",
+                    ObjectType = "Person",
                 };
 
                 // Create and add the ObjectProperties for the person
@@ -184,7 +182,7 @@ public async Task<bool> UpdateObjectAsync(MyObjectDto dto)
                 person.ObjectProperties.Add(new ObjectProperties
                 {
                     ObjectId = person.ObjectId,  // Assign the new ObjectId for the person
-                    Field = "Email",
+                    Field = "E-Mail",
                     Value = $"person{j}@company{i}.com",
                 });
 
@@ -192,7 +190,7 @@ public async Task<bool> UpdateObjectAsync(MyObjectDto dto)
                 {
                     ObjectId = person.ObjectId,  // Assign the new ObjectId for the person
                     Field = "Registration Date",
-                    Value = "01-01-2000",
+                    Value = "2000-01-01",
                 });
 
                 ObjList.Add(person);
@@ -200,9 +198,6 @@ public async Task<bool> UpdateObjectAsync(MyObjectDto dto)
         }
         return ObjList;
     }
-
-
-
 
     public async Task SaveManyObjectsAsync(List<MyObject> objects)
     {
