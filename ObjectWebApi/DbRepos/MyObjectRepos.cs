@@ -78,11 +78,18 @@ public async Task<bool> UpdateObjectAsync(MyObjectDto dto)
 
     public async Task DeleteAllObjectsAsync()
     {
+        // Step 1: Clear the relation table (if needed)
         await _context.Database.ExecuteSqlRawAsync("DELETE FROM MyObjectRelation");
+
+        // Step 2: Delete from ObjectProperties (child)
         _context.ObjectProperties.RemoveRange(_context.ObjectProperties);
+
+        // Step 3: Delete from MyObjects (parent)
         _context.MyObjects.RemoveRange(_context.MyObjects);
+
         await _context.SaveChangesAsync();
     }
+
 
     public async Task<List<MyObject>> GetAllObjectsAsync()
     {

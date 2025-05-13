@@ -74,21 +74,17 @@ namespace ObjectWebApi.Migrations
                 {
                     table.PrimaryKey("PK_ObjectProperties", x => new { x.ObjectId, x.Field });
                     table.ForeignKey(
-                        name: "FK_ObjectProperties_MyObjects_MyObjectObjectId",
-                        column: x => x.MyObjectObjectId,
+                        name: "FK_ObjectProperties_MyObjects_ObjectId",
+                        column: x => x.ObjectId,
                         principalTable: "MyObjects",
-                        principalColumn: "ObjectId");
+                        principalColumn: "ObjectId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_MyObjectRelation_ChildId",
                 table: "MyObjectRelation",
                 column: "ChildId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ObjectProperties_MyObjectObjectId",
-                table: "ObjectProperties",
-                column: "MyObjectObjectId");
         }
 
         /// <inheritdoc />

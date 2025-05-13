@@ -19,10 +19,11 @@ public class MyObject
 
 public class ObjectProperties
 {
-    public Guid ObjectId { get; set; } 
+    public Guid ObjectId { get; set; } // Composite PK
 
     public string Field { get; set; }
     public string Value { get; set; }
+     public Guid? MyObjectObjectId { get; set; } //FK
 
     [JsonIgnore]
     public MyObject MyObject { get; set; } // Navigation property

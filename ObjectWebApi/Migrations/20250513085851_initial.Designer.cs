@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ObjectWebApi.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20250429094311_initial")]
+    [Migration("20250513085851_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -62,8 +62,6 @@ namespace ObjectWebApi.Migrations
 
                     b.HasKey("ObjectId", "Field");
 
-                    b.HasIndex("MyObjectObjectId");
-
                     b.ToTable("ObjectProperties");
                 });
 
@@ -103,9 +101,13 @@ namespace ObjectWebApi.Migrations
 
             modelBuilder.Entity("Models.ObjectProperties", b =>
                 {
-                    b.HasOne("Models.MyObject", null)
+                    b.HasOne("Models.MyObject", "MyObject")
                         .WithMany("ObjectProperties")
-                        .HasForeignKey("MyObjectObjectId");
+                        .HasForeignKey("ObjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MyObject");
                 });
 
             modelBuilder.Entity("MyObjectRelation", b =>

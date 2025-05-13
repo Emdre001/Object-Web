@@ -29,7 +29,7 @@ public class MainDbContext : Microsoft.EntityFrameworkCore.DbContext
             // Relation till MyObject
             entity.HasOne(op => op.MyObject)
                 .WithMany(o => o.ObjectProperties)
-                .HasForeignKey(op => op.ObjectId)
+                .HasForeignKey(op => op.MyObjectObjectId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
