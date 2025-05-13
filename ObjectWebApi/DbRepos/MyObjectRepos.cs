@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using DbContext;
 using Models;
-
+using DTO;
 public class ObjectRepository
 {
     private readonly MainDbContext _context;
@@ -22,6 +22,42 @@ public class ObjectRepository
     
         await _context.SaveChangesAsync();
     }
+public async Task<List<MyObject>> LoadObjectsByIdsAsync(IEnumerable<Guid> ids)
+{
+    return await _context.MyObjects
+        .Where(o => ids.Contains(o.ObjectId))
+        .ToListAsync();
+}
+
+public async Task<bool> UpdateObjectAsync(MyObjectDto dto)
+{
+    var existing = await _context.MyObjects
+        .Include(o => o.ObjectProperties)
+        .FirstOrDefaultAsync(o => o.ObjectId == dto.ObjectId);
+
+    if (existing == null)
+        return false;
+
+    // Uppdatera egenskaper
+    existing.ObjectName = dto.ObjectName;
+    existing.ObjectType = dto.ObjectType;
+
+    // Hantera ObjectProperties
+    _context.ObjectProperties.RemoveRange(existing.ObjectProperties);
+
+    var updatedProperties = dto.ObjectProperties.Select(p => new ObjectProperties
+    {
+        ObjectId = dto.ObjectId,
+        Field = p.Field,
+        Value = p.Value
+    }).ToList();
+
+    existing.ObjectProperties = updatedProperties;
+
+    await _context.SaveChangesAsync();
+    return true;
+}
+
 
     public async Task<MyObject?> LoadObjectAsync(Guid objectId)
     {

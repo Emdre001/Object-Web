@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Models;
-
+using DTO;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -135,4 +135,18 @@ public class ObjectController : ControllerBase
         await _repository.SaveManyObjectsAsync(ObjList);
         return ObjList;
     }
+
+    [HttpPut("{objectId:guid}")]
+    public async Task<IActionResult> UpdateObject(Guid objectId, [FromBody] MyObjectDto dto)
+    {
+        if (objectId != dto.ObjectId)
+            return BadRequest("ObjectId mismatch between URL and body.");
+
+        var success = await _repository.UpdateObjectAsync(dto);
+        if (!success)
+            return NotFound();
+
+        return NoContent();
+    }
+
 }

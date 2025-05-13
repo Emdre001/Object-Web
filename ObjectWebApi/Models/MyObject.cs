@@ -19,8 +19,13 @@ public class MyObject
 
 public class ObjectProperties
 {
-    public Guid ObjectId { get; set; }
+    public Guid ObjectId { get; set; } 
+
     public string Field { get; set; }
     public string Value { get; set; }
+
+    [JsonIgnore]
+    public MyObject MyObject { get; set; } // Navigation property
 }
+
 
