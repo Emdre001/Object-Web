@@ -5,7 +5,10 @@ import '../styles/list.css';
 export function ListPage() {
 const { objectType, appID } = useParams();
 const [objects, setObjects] = useState([]);
+const [fields, setFields] = useState([]);
 const [error, setError] = useState(null);
+const [sortField, setSortField] = useState('objectName');
+const [sortDirection, setSortDirection] = useState('asc');
 
   useEffect(() => {
     const fetchObjects = async () => {
@@ -18,6 +21,16 @@ const [error, setError] = useState(null);
 
         const filtered = list.filter(obj => obj.objectType === objectType);
         const sorted = filtered.sort((a, b) => a.objectName.localeCompare(b.objectName));
+
+        const fieldSet = new Set();
+        sorted.forEach(obj => {
+          const properties = getPropertiesArray(obj.objectProperties);
+          properties.forEach(prop => {
+            if (prop.field) fieldSet.add(prop.field);
+          });
+        });
+
+        setFields(Array.from(fieldSet));
         setObjects(sorted);
         setError(null);
       } catch (err) {
@@ -29,17 +42,87 @@ const [error, setError] = useState(null);
     fetchObjects();
   }, [objectType]);
 
+  const getSortedObjects = () => {
+    const sorted = [...objects];
+    sorted.sort((a, b) => {
+      if (sortField === 'objectName') {
+        return sortDirection === 'asc'
+          ? a.objectName.localeCompare(b.objectName)
+          : b.objectName.localeCompare(a.objectName);
+      } else {
+        const aValue = getValueFromField(a, sortField);
+        const bValue = getValueFromField(b, sortField);
+
+        return sortDirection === 'asc'
+          ? String(aValue).localeCompare(String(bValue))
+          : String(bValue).localeCompare(String(aValue));
+      }
+    });
+    return sorted;
+  };
+
+  function getValueFromField(obj, field) {
+    const props = getPropertiesArray(obj.objectProperties);
+    const match = props.find(p => p.field === field);
+    return match?.value ?? '';
+  }
+
+  function handleSort(field) {
+    if (sortField === field) {
+      // Toggle direction
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  }
+  function getPropertiesArray(objectProperties) {
+    if (!objectProperties) return [];
+    if (Array.isArray(objectProperties)) return objectProperties;
+    if (Array.isArray(objectProperties.$values)) return objectProperties.$values;
+    return [];
+  }
+
   return (
     <div className="object-list">
       <h2>{objectType} List</h2>
       {error && <div className="error">{error}</div>}
-      <ul>
-        {objects.map((obj, idx) => (
-          <li key={idx} className="object-name">
-          <Link to={`/${appID}/object/${obj.objectId}`}state={{ objectData: obj }}>{obj.objectName}</Link>
-          </li>
-        ))}
-      </ul>
+      
+      <table className="object-table">
+        <thead>
+          <tr>
+            <th onClick={() => handleSort('objectName')} style={{ cursor: 'pointer' }}>
+              Object Name {sortField === 'objectName' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
+            </th>
+            {fields.map((field, idx) => (
+              <th key={idx} onClick={() => handleSort(field)} style={{ cursor: 'pointer' }}>
+                {field} {sortField === field ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
+              </th>
+            ))}
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {getSortedObjects().map((obj, idx) => {
+            const propMap = new Map();
+            getPropertiesArray(obj.objectProperties).forEach(prop => {
+              if (prop.field) propMap.set(prop.field, prop.value);
+            });
+
+            return (
+              <tr key={idx}>
+                <td>{obj.objectName}</td>
+                {fields.map((field, i) => (
+                  <td key={i}>{propMap.get(field) ?? '—'}</td>
+                ))}
+                <td>
+                  <Link to={`/${appID}/object/${obj.objectId}`} state={{ objectData: obj }}>View Details</Link>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
