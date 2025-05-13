@@ -1,9 +1,10 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate  } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import '../styles/edit.css';
 
 export function EditObjectPage() {
   const { objectID } = useParams(); // this is passed from the route
+  const navigate = useNavigate();
   const [fields, setFields] = useState([]);
   const [objectData, setObjectData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -193,13 +194,19 @@ export function EditObjectPage() {
       }
   
       setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
+      setTimeout(() => {
+        setSaved(false);
+        navigate(-1); 
+      }, 1500); // Fördröjning på 1,5 sekunder så användaren hinner se framgångsmeddelandet
   
     } catch (err) {
       setSaveError(err.message);
       setTimeout(() => setSaveError(null), 3000);
     }
   };
+  
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="error">{error}</div>;
   
 
   return (
@@ -210,7 +217,7 @@ export function EditObjectPage() {
         <button type="submit" className="btn object-btn">Save</button>
       </form>
       {saveError && <div className="error-message">{saveError}</div>}
-      {saved && (<div className="success-message">✅ Saved successfully!</div>)}
+      {saved && (<div className="success-message">✅ Saved successfully, redirecting!</div>)}
     </div>
   );
 }

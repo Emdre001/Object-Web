@@ -132,3 +132,20 @@ html, body, #root {
   display: flex;
   flex-direction: column;
 }
+.back-button {
+  position: fixed; 
+  top: 70px;
+  left: 40px;
+  padding: 10px 20px;
+  background-color: #21a1f1; 
+  color: black;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 1000; /* Gör så knappen ligger över andra element */
+}
+
+.back-button:hover {
+  background-color: #197ab6;
+}
