@@ -14,14 +14,31 @@ public class ObjectController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateObject([FromBody] MyObject obj)
+    public async Task<IActionResult> CreateObject([FromBody] MyObjectDto dto)
     {
-        // Only clear the ID if it's been preset (usually by Swagger or a front-end)
-        if (obj.ObjectId != Guid.Empty)
-            obj.ObjectId = default;
+        if (dto == null)
+        {
+            return BadRequest("Object data is required.");
+        }
 
-        await _repository.SaveObjectAsync(obj);
-        return CreatedAtAction(nameof(GetObject), new { objectId = obj.ObjectId }, obj);
+        try
+        {
+            // Map DTO to domain model
+            var createdObject = _repository.CreateObject(dto);
+
+            // Generate a new GUID for the ObjectId
+            createdObject.ObjectId = Guid.NewGuid();
+
+            // Save the created object to the database
+            await _repository.SaveObjectAsync(createdObject);
+
+            // Return 201 Created with location of the new resource
+            return CreatedAtAction(nameof(GetObject), new { objectId = createdObject.ObjectId }, createdObject);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
     }
 
     [HttpGet("all")]
@@ -36,20 +53,6 @@ public class ObjectController : ControllerBase
     {
         var obj = await _repository.LoadObjectAsync(objectId);
         return obj != null ? Ok(obj) : NotFound();
-    }
-
-    [HttpDelete("{objectId:guid}")]
-    public async Task<IActionResult> DeleteObject(Guid objectId)
-    {
-        await _repository.DeleteObjectAsync(objectId);
-        return NoContent();
-    }
-
-    [HttpDelete("DeleteAll")]
-    public async Task<IActionResult> DeleteAllObjects()
-    {
-        await _repository.DeleteAllObjectsAsync();
-        return NoContent();
     }
 
     [HttpGet("by-type/{objectType}")]
@@ -69,6 +72,29 @@ public class ObjectController : ControllerBase
         return Ok(results);
     }
  
+    [HttpPut("{objectId}")]
+    public async Task<IActionResult> UpdateObject(Guid objectId, [FromBody] UpdateObjectDto dto)
+    {
+        if (dto == null || objectId != dto.ObjectId)
+        {
+            return BadRequest("Invalid object ID or data.");
+        }
+
+        try
+        {
+            var success = await _repository.UpdateObjectAsync(dto);
+
+            if (!success)
+                return NotFound($"Object with ID {objectId} not found.");
+
+            return NoContent(); // 204 success
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
     [HttpPost("create-test-data")]
     public async Task<IActionResult> RunCreateTestData()
     {
@@ -84,17 +110,17 @@ public class ObjectController : ControllerBase
         }
     }
 
-
-    [HttpPut("{objectId:guid}")]
-    public async Task<IActionResult> UpdateObject(Guid objectId, [FromBody] MyObjectDto dto)
+    [HttpDelete("{objectId:guid}")]
+    public async Task<IActionResult> DeleteObject(Guid objectId)
     {
-        if (objectId != dto.ObjectId)
-            return BadRequest("ObjectId mismatch between URL and body.");
+        await _repository.DeleteObjectAsync(objectId);
+        return NoContent();
+    }
 
-        var success = await _repository.UpdateObjectAsync(dto);
-        if (!success)
-            return NotFound();
-
+    [HttpDelete("DeleteAll")]
+    public async Task<IActionResult> DeleteAllObjects()
+    {
+        await _repository.DeleteAllObjectsAsync();
         return NoContent();
     }
 
