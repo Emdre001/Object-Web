@@ -148,9 +148,45 @@ export function EditObjectPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
+    const form = new FormData(e.target);
+    const properties = [];
+  
+    for (const field of fields) {
+      const label = field.fieldName;
+      const editor = field.editor?.toLowerCase();
+  
+      if (editor === 'checkbox') {
+        const values = form.getAll(label); // flera val
+        properties.push({
+          field: label,
+          value: values.join(','),
+          objectId: objectData.objectId
+        });
+      } else {
+        const value = form.get(label);
+        properties.push({
+          field: label,
+          value,
+          objectId: objectData.objectId
+        });
+      }
+    }
+  
+    const dto = {
+      objectId: objectData.objectId,
+      objectName: objectData.objectName,
+      objectType: objectData.objectType,
+      objectProperties: properties
+    };
+  
     try {
-      // Simulerad sparlogik (byt till din riktiga)
-      const res = await fetch('...', { method: 'POST', body: '' });
+      const res = await fetch(`http://localhost:5291/api/Object/${objectData.objectId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dto)
+      });
   
       if (!res.ok) {
         throw new Error('Error, could not save!');
@@ -165,6 +201,7 @@ export function EditObjectPage() {
     }
   };
   
+
   return (
     <div className="edit-page">
       <h2>Edit {objectData?.objectType} (ID: {objectID})</h2>
