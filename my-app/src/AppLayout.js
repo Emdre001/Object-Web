@@ -10,7 +10,7 @@ function AppLayout() {
   if (!isValidAppID(appID)) {
     return <div>Invalid App ID</div>;
   }
-  const isHomepage = location.pathname === `/${appID}/`;
+  const isHomepage = location.pathname === `/${appID}/` || location.pathname === `/${appID}`;
 
   return (
     <div className="App">
