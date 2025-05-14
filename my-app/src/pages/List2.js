@@ -23,7 +23,7 @@ export function ListPage2() {
         const data = dereference(raw);
         const list = Array.isArray(data) ? data : data?.$values;
 
-        const filtered = list.filter(o => o.objectType === objectType);
+        const filtered = list.filter(o => o.objectType.toLowerCase() === objectType.toLowerCase());
         const sorted = filtered.sort((a, b) =>
           a.objectName.localeCompare(b.objectName)
         );
