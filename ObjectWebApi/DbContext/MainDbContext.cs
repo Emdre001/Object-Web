@@ -11,7 +11,7 @@ public class MainDbContext : Microsoft.EntityFrameworkCore.DbContext
 
     public MainDbContext(DbContextOptions<MainDbContext> options) : base(options) { }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+   protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<MyObject>(entity =>
         {
@@ -21,43 +21,41 @@ public class MainDbContext : Microsoft.EntityFrameworkCore.DbContext
                 .HasColumnType("uniqueidentifier")
                 .HasDefaultValueSql("NEWID()")
                 .ValueGeneratedOnAdd();
+
+            entity.HasMany(e => e.Childrens)
+                .WithMany(e => e.Parents)
+                .UsingEntity<Dictionary<string, object>>(
+                    "MyObjectRelation",
+                    j => j
+                        .HasOne<MyObject>()
+                        .WithMany()
+                        .HasForeignKey("ChildId")
+                        .OnDelete(DeleteBehavior.Restrict), 
+                    j => j
+                        .HasOne<MyObject>()
+                        .WithMany()
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict), 
+                    j =>
+                    {
+                        j.HasKey("ParentId", "ChildId");
+                        j.ToTable("MyObjectRelation");
+                    }
+                );
         });
 
         modelBuilder.Entity<ObjectProperties>(entity =>
         {
-             entity.HasKey(op => new { op.ObjectId, op.Field });
-            // Relation till MyObject
+            entity.HasKey(op => new { op.ObjectId, op.Field });
+
             entity.HasOne(op => op.MyObject)
                 .WithMany(o => o.ObjectProperties)
                 .HasForeignKey(op => op.MyObjectObjectId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade); 
         });
-
-        modelBuilder.Entity<MyObject>()
-            .HasMany(e => e.Childrens)
-            .WithMany(e => e.Parents)
-            .UsingEntity<Dictionary<string, object>>(
-                "MyObjectRelation",
-                j => j
-                    .HasOne<MyObject>()
-                    .WithMany()
-                    .HasForeignKey("ChildId")
-                    .OnDelete(DeleteBehavior.Restrict),
-                j => j
-                    .HasOne<MyObject>()
-                    .WithMany()
-                    .HasForeignKey("ParentId")
-                    .OnDelete(DeleteBehavior.Restrict),
-                j =>
-                {
-                    j.HasKey("ParentId", "ChildId");
-                    j.ToTable("MyObjectRelation");
-                }
-            );
         modelBuilder.Entity<SettingsEntity>(entity =>
         {
             entity.HasKey(e => e.SettingsId);
         });
     }
-
 }

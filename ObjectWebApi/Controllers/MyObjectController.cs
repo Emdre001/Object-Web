@@ -71,6 +71,26 @@ public class ObjectController : ControllerBase
         var results = await _repository.SearchObjectsAsync(term);
         return Ok(results);
     }
+
+    [HttpGet("get-children/{objectId}")]
+    public async Task<IActionResult> GetChildrenByObjectId(Guid objectId)
+    {
+        try
+        {
+            var children = await _repository.GetChildrenByObjectIdAsync(objectId);
+            if (children == null || children.Count == 0)
+            {
+                return NotFound($"No children found for the object with ID {objectId}");
+            }
+
+            return Ok(children); 
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error fetching children: {ex.Message}");
+        }
+    }
+
  
     [HttpPut("{objectId}")]
     public async Task<IActionResult> UpdateObject(Guid objectId, [FromBody] UpdateObjectDto dto)

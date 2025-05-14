@@ -19,7 +19,7 @@ public class ObjectRepository
             ObjectId = Guid.NewGuid(),
             ObjectName = dto.ObjectName,
             ObjectType = dto.ObjectType,
-            ObjectProperties = new List<ObjectProperties>()  // Assuming you want to map ObjectProperties
+            ObjectProperties = new List<ObjectProperties>()  
         };
 
         // Add properties from the DTO (if any)
@@ -41,75 +41,71 @@ public class ObjectRepository
         var ObjList = new List<MyObject>(); 
         for (int i = 0; i < 10; i++)
         {
-            MyObject customer = new MyObject
+            MyObject company = new MyObject
             {
-                ObjectId = Guid.NewGuid(), // Generate a new ObjectId for the customer
+                ObjectId = Guid.NewGuid(), // Generate a new ObjectId for the company
                 ObjectName = $"Company {i}",
                 ObjectType = "Company",
             };
 
-            // Create the ObjectProperties for the customer
-            ObjectProperties customerProp = new ObjectProperties
+         
+        company.ObjectProperties.Add(new ObjectProperties
+        {
+            ObjectId = company.ObjectId,
+            Field = "Homepage",
+            Value = $"www.company{i}.se",
+        });
+        ObjList.Add(company);
+
+        for (int j = 0; j < 5; j++)
+        {
+            MyObject person = new MyObject
             {
-                ObjectId = customer.ObjectId,  // Set the ObjectId to the customer's ObjectId
-                Field = "Homepage",   // Set the Field
-                Value = $"www.company{i}.se",  // Set the Value
+                ObjectId = Guid.NewGuid(),
+                ObjectName = $"Person {j} {company.ObjectName}",
+                ObjectType = "Person",
             };
-            customer.ObjectProperties.Add(customerProp);  // Add to the customer
 
-            ObjList.Add(customer);
-
-            // Add child Person objects
-            for (int j = 0; j < 5; j++)
+            person.ObjectProperties.Add(new ObjectProperties
             {
-                MyObject person = new MyObject
-                {
-                    ObjectId = Guid.NewGuid(),  // Generate a new ObjectId for each person
-                    ObjectName = $"Person {j} {customer.ObjectName}",
-                    ObjectType = "Person",
-                };
+                ObjectId = person.ObjectId,
+                Field = "Phonenumber",
+                Value = "0701234567",
+            });
+            person.ObjectProperties.Add(new ObjectProperties
+            {
+                ObjectId = person.ObjectId,
+                Field = "Active",
+                Value = "True",
+            });
+            person.ObjectProperties.Add(new ObjectProperties
+            {
+                ObjectId = person.ObjectId,
+                Field = "Gender",
+                Value = "Other",
+            });
+            person.ObjectProperties.Add(new ObjectProperties
+            {
+                ObjectId = person.ObjectId,
+                Field = "E-Mail",
+                Value = $"person{j}@company{i}.com",
+            });
+            person.ObjectProperties.Add(new ObjectProperties
+            {
+                ObjectId = person.ObjectId,
+                Field = "Registration Date",
+                Value = "2000-01-01",
+            });
 
-                person.ObjectProperties.Add(new ObjectProperties
-                {
-                    ObjectId = person.ObjectId,  // Assign the new ObjectId for the person
-                    Field = "Phonenumber",
-                    Value = "0701234567",
-                });
+            // Lägg till person som child till company
+            company.Childrens.Add(person);
+            person.Parents.Add(company);
 
-                person.ObjectProperties.Add(new ObjectProperties
-                {
-                    ObjectId = person.ObjectId,  // Assign the new ObjectId for the person
-                    Field = "Active",
-                    Value = "True",
-                });
-
-                person.ObjectProperties.Add(new ObjectProperties
-                {
-                    ObjectId = person.ObjectId,  // Assign the new ObjectId for the person
-                    Field = "Gender",
-                    Value = "Other",
-                });
-
-                person.ObjectProperties.Add(new ObjectProperties
-                {
-                    ObjectId = person.ObjectId,  // Assign the new ObjectId for the person
-                    Field = "E-Mail",
-                    Value = $"person{j}@company{i}.com",
-                });
-
-                person.ObjectProperties.Add(new ObjectProperties
-                {
-                    ObjectId = person.ObjectId,  // Assign the new ObjectId for the person
-                    Field = "Registration Date",
-                    Value = "2000-01-01",
-                });
-
-                ObjList.Add(person);
-            }
+            ObjList.Add(person);
         }
-        return ObjList;
     }
-
+    return ObjList;
+}
     public async Task<bool> UpdateObjectAsync(UpdateObjectDto dto)
     {
         var existing = await _context.MyObjects
@@ -154,6 +150,18 @@ public class ObjectRepository
             .Include(o => o.ObjectProperties)
             .Where(o => o.ObjectType == objectType)
             .ToListAsync();
+    }
+    public async Task<List<MyObject>> GetChildrenByObjectIdAsync(Guid objectId)
+    {
+        var obj = await _context.MyObjects
+            .Include(o => o.Childrens)  
+            .ThenInclude(c => c.ObjectProperties) 
+            .FirstOrDefaultAsync(o => o.ObjectId == objectId);
+        if (obj == null)
+        {
+            return new List<MyObject>();  
+        }
+        return obj.Childrens;
     }
 
     public async Task<List<MyObject>> SearchObjectsAsync(string term)

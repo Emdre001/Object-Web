@@ -11,7 +11,7 @@ public class MyObject
 
     // Self-referencing parent-child relationship
     [JsonIgnore]
-    public List<MyObject> Parents { get; set; } // Navigation property to Parent
+    public List<MyObject> Parents { get; set; } = new();  // Navigation property to Parent
     [JsonIgnore]
     public List<MyObject> Childrens { get; set; } = new(); // Navigation property to Children
 }
