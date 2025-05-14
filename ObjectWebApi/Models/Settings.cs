@@ -18,13 +18,13 @@ public class Application
     public Guid AppId { get; set; }
     public string Name { get; set; } = string.Empty;
     public List<ObjectType> ObjectType { get; set; } = new();
-    //public List<ParentReference> Parents { get; set; } = new();
+    
 }
-//public class ParentReference
 
  public class ObjectType
 {
     public string Name { get; set; }
+    public string ListViewer {get; set;}
     public List<string> ParentObjectTypes { get; set; } = new();
     public List<Field> Fields { get; set; } = new();
 }

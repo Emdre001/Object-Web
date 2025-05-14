@@ -141,9 +141,11 @@ public class SettingsController : ControllerBase
         };
 
         ObjectType company = new ObjectType { Name = "Company" };
+        company.ListViewer = "Default";
         company.Fields.Add(new Field { FieldName = "Homepage", Editor = "Text", Defaults = "" });
 
         ObjectType person = new ObjectType { Name = "Person" };
+        person.ListViewer = "MUI";
         person.ParentObjectTypes.Add("Company");
         person.Fields.Add(new Field { FieldName = "Phonenumber", Editor = "number", Defaults = "" });
         person.Fields.Add(new Field { FieldName = "Active", Editor = "Select", Defaults = "True, False" });
