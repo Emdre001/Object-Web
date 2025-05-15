@@ -1,7 +1,7 @@
 import React from 'react';
 import DataTable from 'react-data-table-component';
 
-const ReactDataTable = ({ title, columns, data, loading = false }) => {
+export const ReactDataTable = ({ title, columns, data, loading = false }) => {
   return (
     <div className="p-4">
       {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}
@@ -16,5 +16,3 @@ const ReactDataTable = ({ title, columns, data, loading = false }) => {
     </div>
   );
 };
-
-export default ReactDataTable;

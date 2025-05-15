@@ -1,126 +1,40 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
-import Box from '@mui/material/Box';
+import '../styles/MuiList.css';
 
-export function MuiList({ objectType, appID, fetchUrl }) {
+export const MuiList = ({ rows, columns, appID, sortModel, onSortModelChange }) => {
   const navigate = useNavigate();
-  const [objects, setObjects] = useState([]);
-  const [fields, setFields] = useState([]);
-  const [error, setError] = useState(null);
-  const [sortModel, setSortModel] = useState([
-    { field: 'objectName', sort: 'asc' }
-  ]);
 
-  useEffect(() => {
-    const fetchObjects = async () => {
-      try {
-        const res = await fetch(fetchUrl);
-        if (!res.ok) throw new Error('Failed to fetch');
-        const raw = await res.json();
-        const data = dereference(raw);
-        const list = Array.isArray(data) ? data : data?.$values;
+  const handleViewDetails = (row) => {
+    // Navigate to object page with appID and objectID, passing row data in state
+    navigate(`/${appID}/object/${row.id}`, { state: { objectData: row } });
+  };
 
-        const filtered = list.filter(o => o.objectType.toLowerCase() === objectType.toLowerCase());
-        const sorted = filtered.sort((a, b) =>
-          a.objectName.localeCompare(b.objectName)
-        );
-
-        // collect columns
-        const fieldSet = new Set();
-        sorted.forEach(o => {
-          const propsArr = getPropertiesArray(o.objectProperties);
-          propsArr.forEach(p => p.field && fieldSet.add(p.field));
-        });
-
-        setFields(Array.from(fieldSet));
-        setObjects(sorted);
-        setError(null);
-      } catch (err) {
-        console.error(err);
-        setError('Could not load data.');
-      }
-    };
-
-    fetchObjects();
-  }, [objectType, fetchUrl]);
-
-  const columns = useMemo(() => {
-    const base = [
-      {
-        field: 'objectName',
-        headerName: 'Object Name',
-        width: 200,
-        sortable: true,
-        renderCell: params => (
-          <Link to={`/${appID}/object/${params.row.objectId}`} state={{ objectData: params.row }}>{params.value}</Link>
-        )
-      }
-    ];
-
-    const dynamic = fields.map(f => ({
-      field: f,
-      headerName: f,
-      width: 150,
-      sortable: true
-    }));
-
-    return [...base, ...dynamic];
-  }, [fields, appID]);
-
-  const rows = useMemo(() => {
-    return objects.map(o => {
-      const propsArr = getPropertiesArray(o.objectProperties);
-      const row = { id: o.objectId, objectId: o.objectId, objectName: o.objectName };
-      propsArr.forEach(p => p.field && (row[p.field] = p.value));
-      return row;
-    });
-  }, [objects]);
-
-  if (error) {
-    return <div className="error">{error}</div>;
-  }
+  // Add an Action column with a View Details button
+  const columnsWithAction = [
+    ...columns,
+    {
+      field: 'actions',
+      headerName: 'Action',
+      flex: 0.5,
+      sortable: false,
+      renderCell: (params) => (
+        <button onClick={() => handleViewDetails(params.row)}>View Details</button>
+      ),
+    },
+  ];
 
   return (
-    <Box sx={{ height: 600, width: '100%' }}>
+    <div className="mui-list-container">
       <DataGrid
         rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: { paginationModel: { pageSize: 10 } },
-          sorting: { sortModel }
-        }}
-        pageSizeOptions={[10, 25, 50]}
-        checkboxSelection
-        disableRowSelectionOnClick
-        onSortModelChange={model => setSortModel(model)}
+        columns={columnsWithAction}
+        sortModel={sortModel}
+        onSortModelChange={onSortModelChange}
+        pageSizeOptions={[5, 10, 20]}
+        pagination
       />
-    </Box>
+    </div>
   );
-}
-
-// Helper functions
-function getPropertiesArray(objProps) {
-  if (!objProps) return [];
-  if (Array.isArray(objProps)) return objProps;
-  if (Array.isArray(objProps.$values)) return objProps.$values;
-  return [];
-}
-
-function dereference(obj) {
-  const idMap = new Map();
-  function traverse(cur) {
-    if (cur && typeof cur === 'object') {
-      if (cur.$ref) return idMap.get(cur.$ref);
-      if (cur.$id) idMap.set(cur.$id, cur);
-      if (Array.isArray(cur.$values)) {
-        return cur.$values.map(traverse);
-      }
-      Object.keys(cur).forEach(key => {
-        cur[key] = traverse(cur[key]);
-      });
-    }
-    return cur;
-  }
-  return traverse(obj);
-}
+};

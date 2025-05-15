@@ -1,0 +1,27 @@
+.mui-list-container {
+  width: 100%;
+  max-width: 1200px;
+  height: calc(100vh - 140px); /* Adjust for header/footer */
+  margin: 0 auto;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.mui-list-container .MuiDataGrid-root {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Optional enhancements */
+.mui-list-container .MuiDataGrid-row:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+.mui-list-container .MuiDataGrid-columnHeaders {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}

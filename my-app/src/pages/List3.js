@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ReactDataTable from '../components/ReactDataTable';
+import {ReactDataTable} from '../components/ReactDataTable';
 
 const ListPage3 = () => {
   const [data, setData] = useState([]);
