@@ -23,7 +23,7 @@ public class ObjectProperties
 
     public string Field { get; set; }
     public string Value { get; set; }
-     public Guid? MyObjectObjectId { get; set; } //FK
+    public Guid? MyObjectObjectId { get; set; } //FK
 
     [JsonIgnore]
     public MyObject MyObject { get; set; } // Navigation property

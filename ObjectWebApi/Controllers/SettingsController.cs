@@ -148,13 +148,23 @@ public class SettingsController : ControllerBase
         person.ListViewer = "MUI";
         person.ParentObjectTypes.Add("Company");
         person.Fields.Add(new Field { FieldName = "Phonenumber", Editor = "number", Defaults = "" });
-        person.Fields.Add(new Field { FieldName = "Active", Editor = "Select", Defaults = "True, False" });
+        person.Fields.Add(new Field { FieldName = "Active", Editor = "select", Defaults = "True, False" });
         person.Fields.Add(new Field { FieldName = "Gender", Editor = "radio", Defaults = "Female, Male, Other" });
         person.Fields.Add(new Field { FieldName = "E-Mail", Editor = "email", Defaults = "" });
         person.Fields.Add(new Field { FieldName = "Registration Date", Editor = "date", Defaults = "" });
 
+        ObjectType myEvent = new ObjectType { Name = "Event" };
+        myEvent.ListViewer = "ReactDataTable";
+        myEvent.Fields.Add(new Field { FieldName = "EventTitle", Editor = "text", Defaults = "" });
+        myEvent.Fields.Add(new Field { FieldName = "Location", Editor = "text", Defaults = "" });
+        myEvent.Fields.Add(new Field { FieldName = "EventText", Editor = "text", Defaults = "" });
+        myEvent.Fields.Add(new Field { FieldName = "StartTime", Editor = "time", Defaults = "" });
+        myEvent.Fields.Add(new Field { FieldName = "StopTime", Editor = "time", Defaults = "True, False" });
+        myEvent.Fields.Add(new Field { FieldName = "AllDayEvent", Editor = "select", Defaults = "True, False" });
+        
         application.ObjectType.Add(company);
         application.ObjectType.Add(person);
+        application.ObjectType.Add(myEvent);
         settings.Applications.Add(application);
 
         // 💾 Save to database

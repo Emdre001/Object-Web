@@ -13,28 +13,31 @@ public class ObjectRepository
 
     public MyObject CreateObject(MyObjectDto dto)
     {
-        // Create a new MyObject using the data from the DTO
+        // Generate the parent ObjectId once
+        var objectId = Guid.NewGuid();
+
         var newObject = new MyObject
         {
-            ObjectId = Guid.NewGuid(),
+            ObjectId = objectId,
             ObjectName = dto.ObjectName,
             ObjectType = dto.ObjectType,
-            ObjectProperties = new List<ObjectProperties>()  
+            ObjectProperties = new List<ObjectProperties>()
         };
 
-        // Add properties from the DTO (if any)
         foreach (var propertyDto in dto.ObjectProperties)
         {
             newObject.ObjectProperties.Add(new ObjectProperties
             {
+                ObjectId = objectId,            // Same as parent ObjectId
                 Field = propertyDto.Field,
-                Value = propertyDto.Value
+                Value = propertyDto.Value,
+                MyObjectObjectId = objectId    // FK back to parent
             });
         }
 
-        // Return the created object (with no parents or children)
         return newObject;
     }
+
 
     public async Task<List<MyObject>> CreateTestData()
     {

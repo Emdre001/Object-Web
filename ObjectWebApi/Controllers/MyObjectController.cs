@@ -13,7 +13,7 @@ public class ObjectController : ControllerBase
         _repository = repository;
     }
 
-    [HttpPost]
+    [HttpPost("PostObject")]
     public async Task<IActionResult> CreateObject([FromBody] MyObjectDto dto)
     {
         if (dto == null)
@@ -23,16 +23,20 @@ public class ObjectController : ControllerBase
 
         try
         {
-            // Map DTO to domain model
+            // Create object with IDs assigned inside the repo method
             var createdObject = _repository.CreateObject(dto);
 
-            // Generate a new GUID for the ObjectId
-            createdObject.ObjectId = Guid.NewGuid();
+            // Ensure nested ObjectProperties FK is correct (redundant if repo sets properly)
+            if (createdObject.ObjectProperties != null)
+            {
+                foreach (var prop in createdObject.ObjectProperties)
+                {
+                    prop.MyObjectObjectId = createdObject.ObjectId;
+                }
+            }
 
-            // Save the created object to the database
             await _repository.SaveObjectAsync(createdObject);
 
-            // Return 201 Created with location of the new resource
             return CreatedAtAction(nameof(GetObject), new { objectId = createdObject.ObjectId }, createdObject);
         }
         catch (Exception ex)
@@ -40,6 +44,9 @@ public class ObjectController : ControllerBase
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
+
+
+
 
     [HttpGet("all")]
     public async Task<IActionResult> GetAllObjects()
