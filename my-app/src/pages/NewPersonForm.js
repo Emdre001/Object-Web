@@ -6,14 +6,22 @@ export function NewPersonForm() {
   const { appID, objectType } = useParams();
   const navigate = useNavigate();
   const [fields, setFields] = useState([]);
-  const [formValues, setFormValues] = useState({ objectName: '', status: '', gender: '', phoneNumber: '', email: '', registrationDate: '' });
+  const [formValues, setFormValues] = useState({ objectName: '' });
   const [error, setError] = useState(null);
   const [formErrors, setFormErrors] = useState({});
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState(null);
 
-
   const REQUIRED_FIELDS = ['objectName'];
+
+  // Editor map based on field name
+  const editorMap = {
+    phonenumber: 'number',
+    active: 'select',
+    gender: 'radio',
+    'e-mail': 'email',
+    'registration date': 'date'
+  };
 
   useEffect(() => {
     const fetchFields = async () => {
@@ -37,13 +45,12 @@ export function NewPersonForm() {
         const fieldArray = Array.from(fieldSet);
         setFields(fieldArray);
 
-        // Initiera formvärden
+        // Initialize form values (including objectName)
         const initialFormValues = { objectName: '' };
         fieldArray.forEach(field => {
           initialFormValues[field] = '';
         });
         setFormValues(initialFormValues);
-
       } catch (err) {
         console.error(err);
         setError('Kunde inte ladda fält.');
@@ -84,51 +91,52 @@ export function NewPersonForm() {
     setFormValues(prev => ({ ...prev, [name]: value }));
   }
 
+  function getEditorType(fieldName) {
+    return editorMap[fieldName.toLowerCase()] || 'text';
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
-  
+
     const errors = {};
     REQUIRED_FIELDS.forEach(field => {
       if (!formValues[field] || formValues[field].trim() === '') {
         errors[field] = 'Detta fält är obligatoriskt.';
       }
     });
-  
+
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
     }
-  
-    const seen = new Set();
-    const objectProperties = Object.entries(formValues)
-  .filter(([key]) => key !== 'objectName' && seen.add(key)) // garanterar unika fält
-  .map(([field, value]) => ({ field, value }));
 
-  
+    const objectProperties = Object.entries(formValues)
+      .filter(([key]) => key !== 'objectName')
+      .map(([field, value]) => ({ field, value }));
+
     const newObject = {
       objectName: formValues.objectName,
       objectType,
       objectProperties
     };
-  
+
     try {
       const res = await fetch('http://localhost:5291/api/Object/PostObject', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newObject)
       });
-  
+
       if (!res.ok) {
         const errorText = await res.text();
         throw new Error(`Serverfel: ${res.status} - ${errorText}`);
       }
-  
+
       setSaved(true);
       setTimeout(() => {
         setSaved(false);
-        navigate(`/${appID}/${objectType}`);
+        navigate(`/${appID}/list/${objectType}`);
       }, 1500);
-  
     } catch (err) {
       console.error(err);
       setSaveError(err.message);
@@ -141,94 +149,74 @@ export function NewPersonForm() {
       <h2>Create new {objectType}</h2>
       {error && <div className="error">{error}</div>}
       <form onSubmit={handleSubmit} noValidate>
-    <div>
-        <label>Object Name: *</label>
-        <input
-        type="text"
-        name="objectName"
-        value={formValues.objectName}
-        onChange={handleChange}
-        required
-        />
-        {formErrors.objectName && <span className="error">{formErrors.objectName}</span>}
-    </div>
-
-    <div>
-          <label>Status:</label>
-          <select name="status" value={formValues.status} onChange={handleChange}>
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
-        </div>
-
+        {/* ObjectName */}
         <div>
-          <label>Gender:</label>
-          <div className="radio-group">
-          <label>
-            <input
-              type="radio"
-              name="gender"
-              value="Female"
-              checked={formValues.gender === 'Female'}
-              onChange={handleChange}
-            /> Female
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="gender"
-              value="Male"
-              checked={formValues.gender === 'Male'}
-              onChange={handleChange}
-            /> Male
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="gender"
-              value="Other"
-              checked={formValues.gender === 'Other'}
-              onChange={handleChange}
-            /> Other
-          </label>
-          </div>
-        </div>
-
-        <div>
-        <div className="phone-group">
-          <label>Phone Number:</label>
+          <label>Object Name: *</label>
           <input
-            type="tel"
-            name="phoneNumber"
-            value={formValues.phoneNumber}
+            type="text"
+            name="objectName"
+            value={formValues.objectName}
             onChange={handleChange}
+            required
           />
-        </div>
+          {formErrors.objectName && <span className="error">{formErrors.objectName}</span>}
         </div>
 
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={formValues.email}
-            onChange={handleChange}
-          />
-        </div>
+        {/* Dynamic fields */}
+        {fields.map(field => {
+          const type = getEditorType(field);
+          const value = formValues[field] || '';
 
-        <div>
-          <label>Registration Date:</label>
-          <input
-            type="date"
-            name="registrationDate"
-            value={formValues.registrationDate}
-            onChange={handleChange}
-          />
-        </div>
-        
+          if (type === 'radio') {
+            return (
+              <div key={field}>
+                <label>{field}:</label>
+                <div className="radio-group">
+                  {['Female', 'Male', 'Other'].map(option => (
+                    <label key={option}>
+                      <input
+                        type="radio"
+                        name={field}
+                        value={option}
+                        checked={value === option}
+                        onChange={handleChange}
+                      />
+                      {option}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+
+          if (type === 'select') {
+            return (
+              <div key={field}>
+                <label>{field}:</label>
+                <select name={field} value={value} onChange={handleChange}>
+                  <option value="True">True</option>
+                  <option value="False">False</option>
+                </select>
+              </div>
+            );
+          }
+
+          return (
+            <div key={field}>
+              <label>{field}:</label>
+              <input
+                type={type}
+                name={field}
+                value={value}
+                onChange={handleChange}
+              />
+            </div>
+          );
+        })}
+
         <button type="submit">Save</button>
         {saveError && <div className="error-message">{saveError}</div>}
-        {saved && <div className="success-message">✅ Person saved! Redirecting...</div>}
+        {saved && <div className="success-message">✅ Object saved! Redirecting...</div>}
       </form>
     </div>
   );
