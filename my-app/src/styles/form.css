@@ -71,8 +71,8 @@
   }
   
   .error {
-    margin-top: 1rem;
-    color: red;
+    color: #ff6b6b;
+    margin: 1rem 0;
     font-weight: bold;
   }
   

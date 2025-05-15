@@ -45,7 +45,6 @@ export function NewPersonForm() {
         const fieldArray = Array.from(fieldSet);
         setFields(fieldArray);
 
-        // Initialize form values (including objectName)
         const initialFormValues = { objectName: '' };
         fieldArray.forEach(field => {
           initialFormValues[field] = '';
@@ -53,7 +52,7 @@ export function NewPersonForm() {
         setFormValues(initialFormValues);
       } catch (err) {
         console.error(err);
-        setError('Kunde inte ladda fält.');
+        setError('Could not load the page.');
       }
     };
 
@@ -101,7 +100,7 @@ export function NewPersonForm() {
     const errors = {};
     REQUIRED_FIELDS.forEach(field => {
       if (!formValues[field] || formValues[field].trim() === '') {
-        errors[field] = 'Detta fält är obligatoriskt.';
+        errors[field] = 'This field is required.';
       }
     });
 

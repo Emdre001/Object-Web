@@ -130,7 +130,7 @@
 .create-button:hover {
   background-color: #45a049;
 }
-/* Styling for child rows */
+
 .child-row {
   background-color: #2a2d33;
   font-style: normal;
@@ -150,7 +150,6 @@
   cursor: default !important;
   background: none !important;
   font-weight: normal !important;
-  /* remove padding, border, etc, if any */
 }
 
 .expand-button.expanded {
@@ -159,10 +158,10 @@
   font-weight: bold;
 }
 .submenu-toggle {
-  cursor: default;        /* normal cursor, no pointer */
-  user-select: none;      /* prevent text selection on click */
-  color: inherit;         /* inherit text color */
-  font-weight: normal;    /* normal font weight */
-  display: inline;        /* inline text */
+  cursor: default;        
+  user-select: none;     
+  color: inherit;         
+  font-weight: normal;  
+  display: inline;      
 }
 
