@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import '../styles/list.css';
 import React from 'react';
 import { DefaultList } from '../components/DefaultList';
@@ -153,7 +153,10 @@ export function ListPage() {
     <div className="object-list">
       <h2>{objectType} List</h2>
       {error && <div className="error">{error}</div>}
-      <ListComponent
+      <div className="top-bar">
+      <Link to={`/${appID}/${objectType}/new`} className="create-button">Create new person</Link>
+      </div>
+<ListComponent
         {...(listViewer === 'DefaultList' && {
           objectType,
           appID,

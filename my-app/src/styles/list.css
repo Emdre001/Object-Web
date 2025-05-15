@@ -49,7 +49,6 @@
   transform: translateY(-2px);
 }
 
-/* Extra styling för utvald rad i framtiden, om du vill lägga till klick-event */
 .object-name.selected {
   font-weight: bold;
   background-color: #21a1f1;
@@ -110,6 +109,26 @@
 .object-table a:hover {
   color: #ffffff;
   text-decoration: underline;
+}
+.top-bar {
+  position: fixed; 
+  top: 70px;
+  right: 1%;
+  padding: 10px 20px;
+}
+
+.create-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.create-button:hover {
+  background-color: #45a049;
 }
 /* Styling for child rows */
 .child-row {

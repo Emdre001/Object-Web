@@ -45,9 +45,6 @@ public class ObjectController : ControllerBase
         }
     }
 
-
-
-
     [HttpGet("all")]
     public async Task<IActionResult> GetAllObjects()
     {

@@ -1,0 +1,78 @@
+.new-form label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: bold;
+  }
+  
+  .new-form input[type="text"],
+  .new-form input[type="email"],
+  .new-form input[type="tel"],
+  .new-form input[type="date"],
+  .new-form select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.25rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #20232a;
+    color: white;
+  }
+  
+  .new-form input[type="text"]::placeholder,
+  .new-form input[type="email"]::placeholder,
+  .new-form input[type="tel"]::placeholder,
+  .new-form input[type="date"]::placeholder {
+    color: #aaa;
+  }
+  
+  .new-form input[type="radio"],
+  .new-form input[type="checkbox"] {
+    margin-right: 0.5rem;
+    accent-color: #21a1f1; 
+  }
+  
+  .new-form .error {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+  
+  .new-form button {
+    margin-top: 1.5rem;
+    background-color: #4CAF50;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .new-form button:hover {
+    background-color: #45a049;
+  }
+  
+  .radio-group {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .radio-group label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    color: white;
+  }
+  
+  .success {
+    margin-top: 1rem;
+    color: #4CAF50;
+    font-weight: bold;
+  }
+  
+  .error {
+    margin-top: 1rem;
+    color: red;
+    font-weight: bold;
+  }
+  
