@@ -128,21 +128,10 @@
   color: #bbbbbb;
 }
 .expand-button {
-  background-color: #3a3f47;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  display: inline-block;
-  font-size: 1rem;
-  font-family: inherit;
-  user-select: none;
-}
-
-.expand-button:hover {
-  background-color: #50565e;
-  transform: translateY(-1px);
+  cursor: default !important;
+  background: none !important;
+  font-weight: normal !important;
+  /* remove padding, border, etc, if any */
 }
 
 .expand-button.expanded {
@@ -150,3 +139,11 @@
   color: #000;
   font-weight: bold;
 }
+.submenu-toggle {
+  cursor: default;        /* normal cursor, no pointer */
+  user-select: none;      /* prevent text selection on click */
+  color: inherit;         /* inherit text color */
+  font-weight: normal;    /* normal font weight */
+  display: inline;        /* inline text */
+}
+

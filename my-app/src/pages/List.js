@@ -132,12 +132,12 @@ export function ListPage() {
               <React.Fragment key={idx}>
                 <tr>
                   <td>
-                    <div
-                      className={`expand-button ${expandedRows[obj.objectId] ? 'expanded' : ''}`}
+                    <span
+                      className="submenu-toggle"
                       onClick={() => fetchChildren(obj.objectId)}
                     >
-                      {expandedRows[obj.objectId] ? '▼' : '▶'} {obj.objectName}
-                    </div>
+                      {expandedRows[obj.objectId]} {obj.objectName}
+                    </span>
                   </td>
                   {fields.map((field, i) => (
                     <td key={i}>{propMap.get(field) ?? '—'}</td>
