@@ -47,9 +47,6 @@ export function DefaultList({
   };
 
   return (
-    <div className="object-list">
-      <h2>{objectType} List</h2>
-
       <table className="object-table">
         <thead>
           <tr>
@@ -119,6 +116,5 @@ export function DefaultList({
           })}
         </tbody>
       </table>
-    </div>
   );
 }

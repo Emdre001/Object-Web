@@ -95,7 +95,6 @@ public class ObjectController : ControllerBase
         }
     }
 
- 
     [HttpPut("{objectId}")]
     public async Task<IActionResult> UpdateObject(Guid objectId, [FromBody] UpdateObjectDto dto)
     {

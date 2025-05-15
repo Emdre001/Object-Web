@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import '../styles/list.css';
 import React from 'react';
 import { DefaultList } from '../components/DefaultList';
@@ -16,6 +16,9 @@ export function ListPage() {
   const [expandedRows, setExpandedRows] = useState({});
   const [childrenMap, setChildrenMap] = useState({});
   const [listViewer, setListViewer] = useState('DefaultList');
+  const location = useLocation();
+  const showCreateButton = location.pathname.endsWith('/list/Person');
+
 
   const viewerComponentMap = {
     DefaultList,
@@ -153,10 +156,12 @@ export function ListPage() {
     <div className="object-list">
       <h2>{objectType} List</h2>
       {error && <div className="error">{error}</div>}
-      <div className="top-bar">
-      <Link to={`/${appID}/${objectType}/new`} className="create-button">Create new person</Link>
-      </div>
-<ListComponent
+      {showCreateButton && (
+        <div className="top-bar">
+          <Link to={`/${appID}/${objectType}/new`} className="create-button">Create new person</Link>
+        </div>
+        )}
+        <ListComponent
         {...(listViewer === 'DefaultList' && {
           objectType,
           appID,

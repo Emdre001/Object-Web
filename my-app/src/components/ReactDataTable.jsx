@@ -4,7 +4,6 @@ import DataTable from 'react-data-table-component';
 export const ReactDataTable = ({ title, columns, data, loading = false }) => {
   return (
     <div className="p-4">
-      {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}
       <DataTable
         columns={columns}
         data={data}

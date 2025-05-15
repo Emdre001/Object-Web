@@ -154,12 +154,13 @@ public class SettingsController : ControllerBase
         person.Fields.Add(new Field { FieldName = "Registration Date", Editor = "date", Defaults = "" });
 
         ObjectType myEvent = new ObjectType { Name = "Event" };
-        myEvent.ListViewer = "ReactDataTable";
+        myEvent.ListViewer = "Calender";
         myEvent.Fields.Add(new Field { FieldName = "EventTitle", Editor = "text", Defaults = "" });
         myEvent.Fields.Add(new Field { FieldName = "Location", Editor = "text", Defaults = "" });
         myEvent.Fields.Add(new Field { FieldName = "EventText", Editor = "text", Defaults = "" });
         myEvent.Fields.Add(new Field { FieldName = "StartTime", Editor = "time", Defaults = "" });
-        myEvent.Fields.Add(new Field { FieldName = "StopTime", Editor = "time", Defaults = "True, False" });
+        myEvent.Fields.Add(new Field { FieldName = "StopTime", Editor = "time", Defaults = "" });
+        myEvent.Fields.Add(new Field { FieldName = "EventDate", Editor = "date", Defaults = "" });
         myEvent.Fields.Add(new Field { FieldName = "AllDayEvent", Editor = "select", Defaults = "True, False" });
         
         application.ObjectType.Add(company);

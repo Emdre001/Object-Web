@@ -40,18 +40,17 @@ public class ObjectRepository
 
 
     public async Task<List<MyObject>> CreateTestData()
-    {
-        var ObjList = new List<MyObject>(); 
-        for (int i = 0; i < 10; i++)
-        {
-            MyObject company = new MyObject
-            {
-                ObjectId = Guid.NewGuid(), // Generate a new ObjectId for the company
-                ObjectName = $"Company {i}",
-                ObjectType = "Company",
-            };
+{
+    var ObjList = new List<MyObject>();
 
-         
+    for (int i = 0; i < 10; i++)
+    {
+        MyObject company = new MyObject
+        {
+            ObjectId = Guid.NewGuid(),
+            ObjectName = $"Company {i}",
+            ObjectType = "Company",
+        };
         company.ObjectProperties.Add(new ObjectProperties
         {
             ObjectId = company.ObjectId,
@@ -69,46 +68,44 @@ public class ObjectRepository
                 ObjectType = "Person",
             };
 
-            person.ObjectProperties.Add(new ObjectProperties
-            {
-                ObjectId = person.ObjectId,
-                Field = "Phonenumber",
-                Value = "0701234567",
-            });
-            person.ObjectProperties.Add(new ObjectProperties
-            {
-                ObjectId = person.ObjectId,
-                Field = "Active",
-                Value = "True",
-            });
-            person.ObjectProperties.Add(new ObjectProperties
-            {
-                ObjectId = person.ObjectId,
-                Field = "Gender",
-                Value = "Other",
-            });
-            person.ObjectProperties.Add(new ObjectProperties
-            {
-                ObjectId = person.ObjectId,
-                Field = "E-Mail",
-                Value = $"person{j}@company{i}.com",
-            });
-            person.ObjectProperties.Add(new ObjectProperties
-            {
-                ObjectId = person.ObjectId,
-                Field = "Registration Date",
-                Value = "2000-01-01",
-            });
+            person.ObjectProperties.Add(new ObjectProperties { ObjectId = person.ObjectId, Field = "Phonenumber", Value = "0701234567" });
+            person.ObjectProperties.Add(new ObjectProperties { ObjectId = person.ObjectId, Field = "Active", Value = "True" });
+            person.ObjectProperties.Add(new ObjectProperties { ObjectId = person.ObjectId, Field = "Gender", Value = "Other" });
+            person.ObjectProperties.Add(new ObjectProperties { ObjectId = person.ObjectId, Field = "E-Mail", Value = $"person{j}@company{i}.com" });
+            person.ObjectProperties.Add(new ObjectProperties { ObjectId = person.ObjectId, Field = "Registration Date", Value = "2000-01-01" });
 
-            // Lägg till person som child till company
-            company.Childrens.Add(person);
+            company.Childrens.Add(person);  // renamed Childrens to Children
             person.Parents.Add(company);
 
             ObjList.Add(person);
         }
     }
-    return ObjList;
+
+    for (int k = 0; k < 5; k++)
+        {
+            MyObject myEvent = new MyObject
+            {
+                ObjectId = Guid.NewGuid(),
+                ObjectName = $"Event {k + 1}",
+                ObjectType = "Event",
+            };
+
+            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "EventTitle", Value = $"Event Title {k + 1}" });
+            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "Location", Value = "Stockholm" });
+            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "EventText", Value = $"Event {k + 1}" });
+            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "StartTime", Value = "17.00" });
+            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "StopTime", Value = "22.00" });
+            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "EventDate", Value = $"2025-05-0{k + 1}" });
+            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "AllDayEvent", Value = "False" });
+
+            ObjList.Add(myEvent);
+        }
+
+    return ObjList;  // <-- Return after loop finishes
 }
+
+
+
     public async Task<bool> UpdateObjectAsync(UpdateObjectDto dto)
     {
         var existing = await _context.MyObjects
@@ -154,6 +151,7 @@ public class ObjectRepository
             .Where(o => o.ObjectType == objectType)
             .ToListAsync();
     }
+
     public async Task<List<MyObject>> GetChildrenByObjectIdAsync(Guid objectId)
     {
         var obj = await _context.MyObjects
