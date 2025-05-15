@@ -3,7 +3,6 @@ using Microsoft.OpenApi.Models;
 using DbContext;
 using System.Text.Json;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -13,8 +12,6 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.MaxDepth = 100; // Optional: increase if needed
 });
 
-
-    
 // Add CORS
 builder.Services.AddCors(options =>
 {

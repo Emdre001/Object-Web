@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import '../styles/list.css';
+import React from 'react';
+
 
 export function ListPage() {
-const { objectType, appID } = useParams();
-const [objects, setObjects] = useState([]);
-const [fields, setFields] = useState([]);
-const [error, setError] = useState(null);
-const [sortField, setSortField] = useState('objectName');
-const [sortDirection, setSortDirection] = useState('asc');
+  const { objectType, appID } = useParams();
+  const [objects, setObjects] = useState([]);
+  const [fields, setFields] = useState([]);
+  const [error, setError] = useState(null);
+  const [sortField, setSortField] = useState('objectName');
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [expandedRows, setExpandedRows] = useState({});
+  const [childrenMap, setChildrenMap] = useState({});
 
   useEffect(() => {
     const fetchObjects = async () => {
@@ -42,6 +46,21 @@ const [sortDirection, setSortDirection] = useState('asc');
     fetchObjects();
   }, [objectType]);
 
+  const fetchChildren = async (objectId) => {
+    try {
+      const response = await fetch(`http://localhost:5291/api/Object/get-children/${objectId}`);
+      if (!response.ok) throw new Error('Failed to fetch children');
+      const rawData = await response.json();
+      const data = dereference(rawData);
+      const list = Array.isArray(data) ? data : data?.$values || [];
+
+      setChildrenMap(prev => ({ ...prev, [objectId]: list }));
+      setExpandedRows(prev => ({ ...prev, [objectId]: !prev[objectId] }));
+    } catch (err) {
+      console.error('Error fetching children:', err);
+    }
+  };
+
   const getSortedObjects = () => {
     const sorted = [...objects];
     sorted.sort((a, b) => {
@@ -69,13 +88,13 @@ const [sortDirection, setSortDirection] = useState('asc');
 
   function handleSort(field) {
     if (sortField === field) {
-      // Toggle direction
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
       setSortDirection('asc');
     }
   }
+
   function getPropertiesArray(objectProperties) {
     if (!objectProperties) return [];
     if (Array.isArray(objectProperties)) return objectProperties;
@@ -110,15 +129,45 @@ const [sortDirection, setSortDirection] = useState('asc');
             });
 
             return (
-              <tr key={idx}>
-                <td>{obj.objectName}</td>
-                {fields.map((field, i) => (
-                  <td key={i}>{propMap.get(field) ?? '—'}</td>
-                ))}
-                <td>
-                  <Link to={`/${appID}/object/${obj.objectId}`} state={{ objectData: obj }}>View Details</Link>
-                </td>
-              </tr>
+              <React.Fragment key={idx}>
+                <tr>
+                  <td>
+                    <div
+                      className={`expand-button ${expandedRows[obj.objectId] ? 'expanded' : ''}`}
+                      onClick={() => fetchChildren(obj.objectId)}
+                    >
+                      {expandedRows[obj.objectId] ? '▼' : '▶'} {obj.objectName}
+                    </div>
+                  </td>
+                  {fields.map((field, i) => (
+                    <td key={i}>{propMap.get(field) ?? '—'}</td>
+                  ))}
+                  <td>
+                    <Link to={`/${appID}/object/${obj.objectId}`} state={{ objectData: obj }}>
+                      View Details
+                    </Link>
+                  </td>
+                </tr>
+
+                {expandedRows[obj.objectId] && childrenMap[obj.objectId]?.map((child, childIdx) => {
+                  const childProps = getPropertiesArray(child.objectProperties);
+                  const childMap = new Map(childProps.map(p => [p.field, p.value]));
+
+                  return (
+                    <tr key={`child-${childIdx}`} className="child-row">
+                      <td style={{ paddingLeft: '2em' }}>↳ {child.objectName}</td>
+                      {fields.map((field, i) => (
+                        <td key={i}>{childMap.get(field) ?? '—'}</td>
+                      ))}
+                      <td>
+                        <Link to={`/${appID}/object/${child.objectId}`} state={{ objectData: child }}>
+                          View Details
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </React.Fragment>
             );
           })}
         </tbody>

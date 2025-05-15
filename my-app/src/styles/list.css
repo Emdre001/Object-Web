@@ -111,3 +111,42 @@
   color: #ffffff;
   text-decoration: underline;
 }
+/* Styling for child rows */
+.child-row {
+  background-color: #2a2d33;
+  font-style: normal;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.child-row:hover {
+  background-color: #373b42;
+}
+
+.child-row td {
+  padding-left: 2rem !important;
+  color: #bbbbbb;
+}
+.expand-button {
+  background-color: #3a3f47;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-block;
+  font-size: 1rem;
+  font-family: inherit;
+  user-select: none;
+}
+
+.expand-button:hover {
+  background-color: #50565e;
+  transform: translateY(-1px);
+}
+
+.expand-button.expanded {
+  background-color: #21a1f1;
+  color: #000;
+  font-weight: bold;
+}
