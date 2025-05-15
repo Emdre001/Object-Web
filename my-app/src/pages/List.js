@@ -149,24 +149,27 @@ export function ListPage() {
                   </td>
                 </tr>
 
-                {expandedRows[obj.objectId] && childrenMap[obj.objectId]?.map((child, childIdx) => {
-                  const childProps = getPropertiesArray(child.objectProperties);
-                  const childMap = new Map(childProps.map(p => [p.field, p.value]));
+                {expandedRows[obj.objectId] && childrenMap[obj.objectId]
+                  ?.slice() // create a copy to avoid mutating state
+                  .sort((a, b) => a.objectName.localeCompare(b.objectName))
+                  .map((child, childIdx) => {
+                    const childProps = getPropertiesArray(child.objectProperties);
+                    const childMap = new Map(childProps.map(p => [p.field, p.value]));
 
-                  return (
-                    <tr key={`child-${childIdx}`} className="child-row">
-                      <td style={{ paddingLeft: '2em' }}>↳ {child.objectName}</td>
-                      {fields.map((field, i) => (
-                        <td key={i}>{childMap.get(field) ?? '—'}</td>
-                      ))}
-                      <td>
-                        <Link to={`/${appID}/object/${child.objectId}`} state={{ objectData: child }}>
-                          View Details
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
+                    return (
+                      <tr key={`child-${childIdx}`} className="child-row">
+                        <td style={{ paddingLeft: '2em' }}>↳ {child.objectName}</td>
+                        {fields.map((field, i) => (
+                          <td key={i}>{childMap.get(field) ?? '—'}</td>
+                        ))}
+                        <td>
+                          <Link to={`/${appID}/object/${child.objectId}`} state={{ objectData: child }}>
+                            View Details
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </React.Fragment>
             );
           })}
