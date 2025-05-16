@@ -4,6 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dateClick
 import axios from "axios";
+import '../styles/calendar.css';
 
 export default function MyCalendar() {
   const [events, setEvents] = useState([]);
