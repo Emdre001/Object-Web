@@ -21,4 +21,36 @@
     justify-content: center;
     align-items: start;
   }
+  .edit-page {
+    position: relative;
+    padding-bottom: 40px;
+  }
+  
+  .sticky-back-button {
+    position: sticky;
+    top: 0;
+    background-color: #282c34; 
+    z-index: 100;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  
+  .back-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .back-button:hover {
+    background-color: #0056b3;
+  }
+
+  .calendar-padding {
+    padding-top: 20px; 
+  }
   

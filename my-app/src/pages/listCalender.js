@@ -64,7 +64,7 @@ export default function MyCalendar() {
     : [];
 
   return (
-    <div>
+    <div className="calendar-wrapper">
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
