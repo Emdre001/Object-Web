@@ -5,6 +5,8 @@
     font-family: 'Segoe UI', sans-serif;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 50, 0.05);
+    height: 800px;
+    width: 1200px;
   }
   
   .fc-toolbar {
@@ -102,7 +104,10 @@
   .event-detail-panel button:hover {
     background-color: #0056b3;
   }
-  .calendar-wrapper {
-    margin-top: 100px; 
-  }
+ 
+  .calendar-container {
+    padding: 1rem;
+    margin: 1rem auto; 
+    box-sizing: border-box;
+  } 
   
