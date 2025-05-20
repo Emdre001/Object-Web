@@ -50,12 +50,10 @@ public class ObjectRepository
             ObjectName = $"Company {i}",
             ObjectType = "Company",
         };
-        company.ObjectProperties.Add(new ObjectProperties
-        {
-            ObjectId = company.ObjectId,
-            Field = "Homepage",
-            Value = $"www.company{i}.se",
-        });
+
+        company.ObjectProperties.Add(new ObjectProperties{ ObjectId = company.ObjectId, Field = "Homepage", Value = $"www.company{i}.se"});
+        company.ObjectProperties.Add(new ObjectProperties{ ObjectId = company.ObjectId, Field = "Longitude", Value = "" });
+        company.ObjectProperties.Add(new ObjectProperties{ ObjectId = company.ObjectId, Field = "Latitude", Value = ""});
         ObjList.Add(company);
 
         for (int j = 0; j < 5; j++)

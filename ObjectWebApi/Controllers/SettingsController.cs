@@ -143,6 +143,8 @@ public class SettingsController : ControllerBase
         ObjectType company = new ObjectType { Name = "Company" };
         company.ListViewer = "Default";
         company.Fields.Add(new Field { FieldName = "Homepage", Editor = "Text", Defaults = "" });
+        company.Fields.Add(new Field { FieldName = "Longitude", Editor = "Text", Defaults = "" });
+        company.Fields.Add(new Field { FieldName = "Latitude", Editor = "Text", Defaults = "" });
 
         ObjectType person = new ObjectType { Name = "Person" };
         person.ListViewer = "MuiList";
