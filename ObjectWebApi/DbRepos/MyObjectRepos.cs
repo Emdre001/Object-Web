@@ -38,7 +38,6 @@ public class ObjectRepository
         return newObject;
     }
 
-
     public async Task<List<MyObject>> CreateTestData()
 {
     var ObjList = new List<MyObject>();
@@ -103,8 +102,6 @@ public class ObjectRepository
 
     return ObjList;  // <-- Return after loop finishes
 }
-
-
 
     public async Task<bool> UpdateObjectAsync(UpdateObjectDto dto)
     {

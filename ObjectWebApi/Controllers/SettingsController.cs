@@ -145,7 +145,7 @@ public class SettingsController : ControllerBase
         company.Fields.Add(new Field { FieldName = "Homepage", Editor = "Text", Defaults = "" });
 
         ObjectType person = new ObjectType { Name = "Person" };
-        person.ListViewer = "MUI";
+        person.ListViewer = "MuiList";
         person.ParentObjectTypes.Add("Company");
         person.Fields.Add(new Field { FieldName = "Phonenumber", Editor = "number", Defaults = "" });
         person.Fields.Add(new Field { FieldName = "Active", Editor = "select", Defaults = "True, False" });
@@ -154,7 +154,7 @@ public class SettingsController : ControllerBase
         person.Fields.Add(new Field { FieldName = "Registration Date", Editor = "date", Defaults = "" });
 
         ObjectType myEvent = new ObjectType { Name = "Event" };
-        myEvent.ListViewer = "Calender";
+        myEvent.ListViewer = "Calendar";
         myEvent.Fields.Add(new Field { FieldName = "EventTitle", Editor = "text", Defaults = "" });
         myEvent.Fields.Add(new Field { FieldName = "Location", Editor = "text", Defaults = "" });
         myEvent.Fields.Add(new Field { FieldName = "EventText", Editor = "text", Defaults = "" });
