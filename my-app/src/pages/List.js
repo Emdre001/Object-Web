@@ -116,7 +116,7 @@ export function ListPage() {
       {showCreateButton && (
         <div className="top-bar">
           <Link to={`/${appID}/${objectType}/new`} className="create-button">
-            Create new person
+            Add Person
           </Link>
         </div>
       )}
