@@ -6,7 +6,6 @@ import { DefaultList } from '../components/DefaultList';
 import { MuiList } from '../components/MuiList';
 import { ReactDataTable } from '../components/ReactDataTable';
 
-
 export function ListPage() {
   const { objectType, appID } = useParams();
   const [objects, setObjects] = useState([]);
@@ -14,7 +13,7 @@ export function ListPage() {
   const [error, setError] = useState(null);
   const [sortField, setSortField] = useState('objectName');
   const [sortDirection, setSortDirection] = useState('asc');
-  const [listViewer, setListViewer] = useState('DefaultList');
+  const [listViewer, setListViewer] = useState(null); // null to indicate loading
   const location = useLocation();
   const showCreateButton = location.pathname.endsWith('/list/Person');
 
@@ -25,33 +24,25 @@ export function ListPage() {
   };
 
   useEffect(() => {
-    const fetchSettings = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch('http://localhost:5291/api/Settings');
-        if (!res.ok) throw new Error('Failed to fetch settings');
-        const raw = await res.json();
-        const settings = dereference(raw);
+        // Fetch settings
+        const settingsRes = await fetch('http://localhost:5291/api/Settings');
+        if (!settingsRes.ok) throw new Error('Failed to fetch settings');
+        const rawSettings = await settingsRes.json();
+        const settings = dereference(rawSettings);
 
         const apps = settings?.[0]?.applications;
         const app = apps?.find(a => a.appId === appID);
         const object = app?.objectType?.find(o => o.name === objectType);
 
-        if (object?.listViewer && viewerComponentMap[object.listViewer]) {
-          setListViewer(object.listViewer);
-        } else {
-          setListViewer('DefaultList');
-        }
-      } catch (err) {
-        console.error('Settings fetch error:', err);
-        setListViewer('DefaultList');
-      }
-    };
+        const viewer = object?.listViewer;
+        setListViewer(viewerComponentMap[viewer] ? viewer : 'DefaultList');
 
-    const fetchObjects = async () => {
-      try {
-        const response = await fetch('http://localhost:5291/api/Object/all');
-        if (!response.ok) throw new Error('Failed to fetch');
-        const rawData = await response.json();
+        // Fetch objects
+        const objectsRes = await fetch('http://localhost:5291/api/Object/all');
+        if (!objectsRes.ok) throw new Error('Failed to fetch objects');
+        const rawData = await objectsRes.json();
         const data = dereference(rawData);
         const list = Array.isArray(data) ? data : data?.$values;
 
@@ -70,13 +61,13 @@ export function ListPage() {
         setObjects(sorted);
         setError(null);
       } catch (err) {
-        console.error(err);
+        console.error('Fetch error:', err);
         setError('Could not load data.');
+        setListViewer('DefaultList');
       }
     };
 
-    fetchSettings();
-    fetchObjects();
+    fetchData();
   }, [objectType, appID]);
 
   function getValueFromField(obj, field) {
@@ -121,6 +112,7 @@ export function ListPage() {
     <div className="object-list">
       <h2>{objectType} List</h2>
       {error && <div className="error">{error}</div>}
+      {!listViewer && <div className="loading">Loading...</div>}
       {showCreateButton && (
         <div className="top-bar">
           <Link to={`/${appID}/${objectType}/new`} className="create-button">
@@ -128,39 +120,41 @@ export function ListPage() {
           </Link>
         </div>
       )}
-      <ListComponent
-        {...(listViewer === 'DefaultList' && {
-          objectType,
-          appID,
-          objects,
-          fields,
-          sortField,
-          sortDirection,
-          onSort: handleSort,
-        })}
-        {...(listViewer === 'MuiList' && {
-          rows,
-          columns,
-          appID,
-          sortModel: [{ field: sortField, sort: sortDirection }],
-          onSortModelChange: (model) => {
-            if (model.length > 0) {
-              setSortField(model[0].field);
-              setSortDirection(model[0].sort);
+      {listViewer && (
+        <ListComponent
+          {...(listViewer === 'DefaultList' && {
+            objectType,
+            appID,
+            objects,
+            fields,
+            sortField,
+            sortDirection,
+            onSort: handleSort,
+          })}
+          {...(listViewer === 'MuiList' && {
+            rows,
+            columns,
+            appID,
+            sortModel: [{ field: sortField, sort: sortDirection }],
+            onSortModelChange: (model) => {
+              if (model.length > 0) {
+                setSortField(model[0].field);
+                setSortDirection(model[0].sort);
+              }
             }
-          }
-        })}
-        {...(listViewer === 'ReactDataTable' && {
-          title: `${objectType} List`,
-          columns: columns.map(col => ({
-            name: col.headerName,
-            selector: row => row[col.field],
-            sortable: true,
-          })),
-          data: rows,
-          loading: false,
-        })}
-      />
+          })}
+          {...(listViewer === 'ReactDataTable' && {
+            title: `${objectType} List`,
+            columns: columns.map(col => ({
+              name: col.headerName,
+              selector: row => row[col.field],
+              sortable: true,
+            })),
+            data: rows,
+            loading: false,
+          })}
+        />
+      )}
     </div>
   );
 }
