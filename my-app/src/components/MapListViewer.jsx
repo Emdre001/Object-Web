@@ -3,6 +3,7 @@ import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import '../styles/list.css';
 
 // Fix default marker icon issues with Webpack
 delete L.Icon.Default.prototype._getIconUrl;
@@ -44,7 +45,11 @@ export function MapListViewer({ objects }) {
   const center = markers.length > 0 ? [markers[0].lat, markers[0].lon] : [0, 0];
 
   return (
-    <MapContainer center={center} zoom={markers.length > 0 ? 5 : 2} style={{ height: '600px', width: '100%' }}>
+    <MapContainer 
+      center={center} 
+      zoom={markers.length > 0 ? 5 : 2} 
+      className="map-container"
+    >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="&copy; OpenStreetMap contributors"
