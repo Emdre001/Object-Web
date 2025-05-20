@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import axios from "axios";
+import '../styles/calendar.css';
 
 export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -231,13 +232,13 @@ useEffect(() => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Test Calendar</h1>
+      <h1>Calendar</h1>
       <Calendar onChange={setSelectedDate} value={selectedDate} />
 
       <div style={{ marginTop: "20px" }}>
         <h2>Event for {formattedDate}</h2>
         {eventsForSelectedDate.length === 0 ? (
-          <p>Inga event denna dag.</p>
+          <p>No event today.</p>
         ) : (
           <ul>
             {eventsForSelectedDate.map(event => (
@@ -249,9 +250,9 @@ useEffect(() => {
           </ul>
         )}
 
-        <button onClick={() => setShowForm(!showForm)}>
-          {showForm ? "Avbryt" : "Skapa nytt event"}
-        </button>
+      <button className="btn" onClick={() => setShowForm(!showForm)}>
+        {showForm ? "Cancel" : "Create new event"}
+      </button>
 
         {showForm && (
           <form
@@ -276,7 +277,7 @@ useEffect(() => {
               {formErrors.objectName && <span style={{ color: "red" }}>{formErrors.objectName}</span>}
             </div>
             {fields.map(field => renderField(field))}
-            <button type="submit">Skapa Event</button>
+           <button className="btn" type="submit">Create Event</button>
             {saveError && <div style={{ color: "red" }}>{saveError}</div>}
             {saved && <div style={{ color: "green" }}>✅ Event saved!</div>}
           </form>

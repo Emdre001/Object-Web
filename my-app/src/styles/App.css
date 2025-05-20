@@ -56,7 +56,7 @@
 .btn {
   border: none;
   padding: 0.75rem 2rem;
-  border-radius: 50px; /* extra rundad */
+  border-radius: 50px; 
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;

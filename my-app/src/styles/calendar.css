@@ -1,113 +1,27 @@
-/* FullCalendar default overrides */
-.fc {
-    background-color: #f9fbfd;
-    color: #1a1a1a;
-    font-family: 'Segoe UI', sans-serif;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 50, 0.05);
-    height: 800px;
-    width: 1200px;
-  }
-  
-  .fc-toolbar {
-    background-color: #e6f0fa;
-    padding: 10px;
-    border-bottom: 1px solid #d0e2f2;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-  }
-  
-  .fc-toolbar-title {
-    color: #004080;
-    font-weight: 600;
-  }
-  
-  .fc-button {
-    background-color: #007bff;
-    border: none;
-    color: white;
-    padding: 5px 10px;
-    margin: 0 2px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease;
-  }
-  
-  .fc-button:hover,
-  .fc-button:focus {
-    background-color: #0056b3;
-  }
-  
-  .fc-button-primary:not(:disabled).fc-button-active {
-    background-color: #0056b3;
-    border-color: #004080;
-  }
-  
-  .fc-daygrid-day-number {
-    color: #004080;
-    font-weight: bold;
-  }
-  
-  .fc-daygrid-event {
-    background-color: #cce5ff;
-    border: 1px solid #80bdff;
-    color: #004085;
-    border-radius: 4px;
-    padding: 2px 4px;
-    font-size: 0.85rem;
-  }
-  
-  .fc-day-today {
-    background-color: #e3f2fd !important;
-  }
-  
-  /* Event detail panel */
-  .event-detail-panel {
-    background-color: #ffffff;
-    border: 1px solid #bcdffb;
-    border-radius: 6px;
-    padding: 15px;
-    margin-top: 20px;
-    box-shadow: 0 4px 6px rgba(0, 64, 128, 0.05);
-  }
-  
-  .event-detail-panel h2 {
-    color: #0056b3;
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-  }
-  
-  .event-detail-panel ul {
-    list-style: none;
-    padding-left: 0;
-  }
-  
-  .event-detail-panel li {
-    background-color: #f0f8ff;
-    border-left: 4px solid #007bff;
-    padding: 8px;
-    margin-bottom: 8px;
-    border-radius: 4px;
-  }
-  
-  .event-detail-panel button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 14px;
-    font-size: 0.9rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  
-  .event-detail-panel button:hover {
-    background-color: #0056b3;
-  }
- 
-  .calendar-container {
-    padding: 1rem;
-    margin: 1rem auto; 
-    box-sizing: border-box;
-  } 
-  
+.btn {
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 50px; 
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: black;
+  background-color: #21a1f1;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+.btn + .btn {
+  margin-left: 10px;
+}
+
+.success-message {
+  color: green;
+  font-weight: bold;
+}
+
+.error-message {
+  color: red;
+}
