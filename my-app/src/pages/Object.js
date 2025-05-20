@@ -6,6 +6,7 @@ import '../styles/object.css';
 export function ObjectPage() {
   const { objectID } = useParams();
   const [objectData, setObjectData] = useState(null);
+  const [children, setChildren] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -23,7 +24,25 @@ export function ObjectPage() {
       }
     };
 
+    const fetchChildren = async () => {
+  try {
+    const response = await fetch(`http://localhost:5291/api/Object/get-children/${objectID}`);
+    if (!response.ok) throw new Error('Failed to fetch children');
+    const rawData = await response.json();
+    const data = dereference(rawData);
+    const list = Array.isArray(data) ? data : data?.$values || [];
+    const sortedChildren = list.sort((a, b) =>
+      a.objectName.localeCompare(b.objectName)
+    );
+    setChildren(sortedChildren);
+  } catch (err) {
+    console.error('Error fetching children:', err);
+  }
+};
+
+
     fetchObject();
+    fetchChildren();
   }, [objectID]);
 
   if (error) return <div className="error">{error}</div>;
@@ -38,10 +57,10 @@ export function ObjectPage() {
       <p><strong>Type:</strong> {objectType}</p>
 
       <div className="properties-header">
-    <h3>Properties</h3>
-    <Link to={`edit`} className="edit-icon"><i className="fas fa-edit"></i> </Link>
-  </div>
-  
+        <h3>Properties</h3>
+        <Link to={`edit`} className="edit-icon"><i className="fas fa-edit"></i></Link>
+      </div>
+
       <ul>
         {objectProperties?.map((prop, index) => (
           <li key={index}>
@@ -49,11 +68,25 @@ export function ObjectPage() {
           </li>
         ))}
       </ul>
+
+      {/* --- CHILDREN SECTION (only shown if children exist) --- */}
+      {children.length > 0 && (
+        <div className="children-section">
+          <h3>Children</h3>
+          <ul className="children-list">
+            {children.map(child => (
+              <li key={child.objectId}>
+                {child.objectName} ({child.objectType})
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
 
-// Samma dereference-funktion som i ListPage
+// Same dereference function as in ListPage
 function dereference(obj) {
   const idMap = new Map();
   function traverse(current) {

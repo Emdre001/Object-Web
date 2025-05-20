@@ -13,12 +13,9 @@ export function ListPage() {
   const [error, setError] = useState(null);
   const [sortField, setSortField] = useState('objectName');
   const [sortDirection, setSortDirection] = useState('asc');
-  const [expandedRows, setExpandedRows] = useState({});
-  const [childrenMap, setChildrenMap] = useState({});
   const [listViewer, setListViewer] = useState('DefaultList');
   const location = useLocation();
   const showCreateButton = location.pathname.endsWith('/list/Person');
-
 
   const viewerComponentMap = {
     DefaultList,
@@ -81,39 +78,6 @@ export function ListPage() {
     fetchObjects();
   }, [objectType, appID]);
 
-  const fetchChildren = async (objectId) => {
-    try {
-      const response = await fetch(`http://localhost:5291/api/Object/get-children/${objectId}`);
-      if (!response.ok) throw new Error('Failed to fetch children');
-      const rawData = await response.json();
-      const data = dereference(rawData);
-      const list = Array.isArray(data) ? data : data?.$values || [];
-
-      setChildrenMap(prev => ({ ...prev, [objectId]: list }));
-      setExpandedRows(prev => ({ ...prev, [objectId]: !prev[objectId] }));
-    } catch (err) {
-      console.error('Error fetching children:', err);
-    }
-  };
-
-  const getSortedObjects = () => {
-    const sorted = [...objects];
-    sorted.sort((a, b) => {
-      if (sortField === 'objectName') {
-        return sortDirection === 'asc'
-          ? a.objectName.localeCompare(b.objectName)
-          : b.objectName.localeCompare(a.objectName);
-      } else {
-        const aValue = getValueFromField(a, sortField);
-        const bValue = getValueFromField(b, sortField);
-        return sortDirection === 'asc'
-          ? String(aValue).localeCompare(String(bValue))
-          : String(bValue).localeCompare(String(aValue));
-      }
-    });
-    return sorted;
-  };
-
   function getValueFromField(obj, field) {
     const props = getPropertiesArray(obj.objectProperties);
     const match = props.find(p => p.field === field);
@@ -136,8 +100,8 @@ export function ListPage() {
     return [];
   }
 
-  const rows = objects.map((obj, index) => {
-    const row = { id: obj.objectId, objectName: obj.objectName }; // IMPORTANT: use obj.objectId as id!
+  const rows = objects.map((obj) => {
+    const row = { id: obj.objectId, objectName: obj.objectName };
     const props = getPropertiesArray(obj.objectProperties);
     props.forEach(p => {
       if (p.field) row[p.field] = p.value;
@@ -158,10 +122,12 @@ export function ListPage() {
       {error && <div className="error">{error}</div>}
       {showCreateButton && (
         <div className="top-bar">
-          <Link to={`/${appID}/${objectType}/new`} className="create-button">Create new person</Link>
+          <Link to={`/${appID}/${objectType}/new`} className="create-button">
+            Create new person
+          </Link>
         </div>
-        )}
-        <ListComponent
+      )}
+      <ListComponent
         {...(listViewer === 'DefaultList' && {
           objectType,
           appID,
@@ -170,14 +136,11 @@ export function ListPage() {
           sortField,
           sortDirection,
           onSort: handleSort,
-          expandedRows,
-          onToggleExpand: fetchChildren,
-          childrenMap,
         })}
         {...(listViewer === 'MuiList' && {
           rows,
           columns,
-          appID,  // pass appID here so MuiList can use it for navigation
+          appID,
           sortModel: [{ field: sortField, sort: sortDirection }],
           onSortModelChange: (model) => {
             if (model.length > 0) {
