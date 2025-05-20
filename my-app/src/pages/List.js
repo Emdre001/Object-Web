@@ -5,6 +5,8 @@ import React from 'react';
 import { DefaultList } from '../components/DefaultList';
 import { MuiList } from '../components/MuiList';
 import { ReactDataTable } from '../components/ReactDataTable';
+import { MapListViewer } from '../components/MapListViewer';
+
 
 export function ListPage() {
   const { objectType, appID } = useParams();
@@ -21,6 +23,7 @@ export function ListPage() {
     DefaultList,
     MuiList,
     ReactDataTable,
+    Map: MapListViewer,
   };
 
   useEffect(() => {
@@ -68,7 +71,7 @@ export function ListPage() {
     };
 
     fetchData();
-  }, [objectType, appID]);
+  }, [objectType, appID, MapListViewer]);
 
   function getValueFromField(obj, field) {
     const props = getPropertiesArray(obj.objectProperties);
@@ -109,55 +112,58 @@ export function ListPage() {
   const ListComponent = viewerComponentMap[listViewer] || DefaultList;
 
   return (
-    <div className="object-list">
-      <h2>{objectType} List</h2>
-      {error && <div className="error">{error}</div>}
-      {!listViewer && <div className="loading">Loading...</div>}
-      {showCreateButton && (
-        <div className="top-bar">
-          <Link to={`/${appID}/${objectType}/new`} className="create-button">
-            Add Person
-          </Link>
-        </div>
-      )}
-      {listViewer && (
-        <ListComponent
-          {...(listViewer === 'DefaultList' && {
-            objectType,
-            appID,
-            objects,
-            fields,
-            sortField,
-            sortDirection,
-            onSort: handleSort,
-          })}
-          {...(listViewer === 'MuiList' && {
-            rows,
-            columns,
-            appID,
-            sortModel: [{ field: sortField, sort: sortDirection }],
-            onSortModelChange: (model) => {
-              if (model.length > 0) {
-                setSortField(model[0].field);
-                setSortDirection(model[0].sort);
-              }
+  <div className="object-list">
+    <h2>{objectType} List</h2>
+    {error && <div className="error">{error}</div>}
+    {!listViewer && <div className="loading">Loading...</div>}
+    {showCreateButton && (
+      <div className="top-bar">
+        <Link to={`/${appID}/${objectType}/new`} className="create-button">
+          Add Person
+        </Link>
+      </div>
+    )}
+    {listViewer && (
+      <ListComponent
+        {...(listViewer === 'DefaultList' && {
+          objectType,
+          appID,
+          objects,
+          fields,
+          sortField,
+          sortDirection,
+          onSort: handleSort,
+        })}
+        {...(listViewer === 'MuiList' && {
+          rows,
+          columns,
+          appID,
+          sortModel: [{ field: sortField, sort: sortDirection }],
+          onSortModelChange: (model) => {
+            if (model.length > 0) {
+              setSortField(model[0].field);
+              setSortDirection(model[0].sort);
             }
-          })}
-          {...(listViewer === 'ReactDataTable' && {
-            title: `${objectType} List`,
-            columns: columns.map(col => ({
-              name: col.headerName,
-              selector: row => row[col.field],
-              sortable: true,
-            })),
-            data: rows,
-            loading: false,
-          })}
-        />
-      )}
-    </div>
-  );
-}
+          },
+        })}
+        {...(listViewer === 'ReactDataTable' && {
+          title: `${objectType} List`,
+          columns: columns.map(col => ({
+            name: col.headerName,
+            selector: row => row[col.field],
+            sortable: true,
+          })),
+          data: rows,
+          loading: false,
+        })}
+        {...(listViewer === 'Map' && {
+          objects,
+        })}
+      />
+    )}
+  </div>
+);
+
 
 // Deep dereferencing function for $ref/$id JSON
 function dereference(obj) {
@@ -177,4 +183,5 @@ function dereference(obj) {
     return current;
   }
   return traverse(obj);
+}
 }
