@@ -5,6 +5,7 @@ import React from 'react';
 import { DefaultList } from '../components/DefaultList';
 import { MuiList } from '../components/MuiList';
 import { ReactDataTable } from '../components/ReactDataTable';
+import { Calendar } from '../components/Calendar';
 
 export function ListPage() {
   const { objectType, appID } = useParams();
@@ -21,6 +22,7 @@ export function ListPage() {
     DefaultList,
     MuiList,
     ReactDataTable,
+    Calender: Calendar,
   };
 
   useEffect(() => {
@@ -158,6 +160,10 @@ export function ListPage() {
           })),
           data: rows,
           loading: false,
+        })}
+        {...(listViewer === 'Calender' && {
+          rows,
+          appID,
         })}
       />
     </div>
