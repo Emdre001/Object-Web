@@ -3,7 +3,7 @@ import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import axios from "axios";
 
-export default function TestCalendar() {
+export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [events, setEvents] = useState([]);
   const [fields, setFields] = useState([]);

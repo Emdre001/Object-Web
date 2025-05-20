@@ -29,30 +29,37 @@ export function HomePage() {
   }, []);
 
   return (
-    <div className="App-header">
-      <h1>Welcome to our app!</h1>
-      <h3>Found Applications:</h3>
-      {settingsLoaded && settings?.[0]?.settingEntityName && (
-        <h3>{settings[0].settingEntityName}</h3>
-      )}
-      {!settingsLoaded && !error && <p>Loading settings...</p>}
-      {error && <div className="error">{error}</div>}
+  <div className="App-header">
+    <h1>Welcome to our app!</h1>
+    <h3>Found Applications:</h3>
+    {settingsLoaded && settings?.[0]?.settingEntityName && (
+      <h3>{settings[0].settingEntityName}</h3>
+    )}
+    {!settingsLoaded && !error && <p>Loading settings...</p>}
+    {error && <div className="error">{error}</div>}
 
-      {settingsLoaded && (
-        <div className="button-row">
-          {settings?.[0]?.applications?.[0]?.objectType?.map((objectType, idx) => (
-            <button
-              key={idx}
-              className="btn object-btn"
-              onClick={() => navigate(`/${appID}/list/${objectType.name}`)}
-            >
-              {objectType.name}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+    {settingsLoaded && (
+      <div className="button-row">
+        {settings?.[0]?.applications?.[0]?.objectType?.map((objectType, idx) => (
+          <button
+            key={idx}
+            className="btn object-btn"
+            onClick={() =>
+              navigate(
+                objectType.name === "Event"
+                  ? `/${appID}/Calendar/Event`
+                  : `/${appID}/list/${objectType.name}`
+              )
+            }
+          >
+            {objectType.name}
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+);
+
 }
 
 function dereference(obj) {

@@ -10,7 +10,7 @@ import { EditObjectPage } from './pages/EditObject';
 import { NotFound } from './pages/NotFound';
 import AppInitializer from './pages/AppInitializer';
 import EventCalendar from './pages/listCalender';
-import TestCalendar from "./pages/TestCalendar";
+import CalendarPage from "./pages/Calendar";
 import './styles/App.css';
 
 function App() {
@@ -24,7 +24,7 @@ function App() {
           <Route path=":objectType/new" element={<NewPersonForm />} />
           <Route path="list2/:objectType" element={<ListPage2 />} />
           <Route path="listCalendar/:objectType" element={<EventCalendar />} />
-          <Route path="TestCalendar/:objectType" element={<TestCalendar />} />
+          <Route path="Calendar/:objectType" element={<CalendarPage />} />
           <Route path="list3/" element={<ListPage3 />} />
           <Route path="object/:objectID" element={<ObjectPage />} />
           <Route path="object/:objectID/edit" element={<EditObjectPage />} />
