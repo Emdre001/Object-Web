@@ -5,6 +5,7 @@ import React from 'react';
 import { DefaultList } from '../components/DefaultList';
 import { MuiList } from '../components/MuiList';
 import { ReactDataTable } from '../components/ReactDataTable';
+import { Calendar } from '../components/Calendar';
 
 export function ListPage() {
   const { objectType, appID } = useParams();
@@ -24,6 +25,7 @@ export function ListPage() {
     DefaultList,
     MuiList,
     ReactDataTable,
+    Calender: Calendar,
   };
 
   useEffect(() => {
@@ -136,7 +138,7 @@ export function ListPage() {
     return [];
   }
 
-  const rows = objects.map((obj, index) => {
+  const rows = objects.map((obj) => {
     const row = { id: obj.objectId, objectName: obj.objectName }; // IMPORTANT: use obj.objectId as id!
     const props = getPropertiesArray(obj.objectProperties);
     props.forEach(p => {
@@ -195,6 +197,10 @@ export function ListPage() {
           })),
           data: rows,
           loading: false,
+        })}
+        {...(listViewer === 'Calender' && {
+          rows,
+          appID,
         })}
       />
     </div>
