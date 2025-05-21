@@ -25,3 +25,16 @@
 .error-message {
   color: red;
 }
+
+.map-container {
+  width: 1200px;
+  height: 600px; 
+  position: relative;
+  z-index: 1;
+  margin-top: 20px; 
+}
+
+.leaflet-control-zoom {
+  z-index: 0 !important; 
+}
+
