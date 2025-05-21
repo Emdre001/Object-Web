@@ -13,38 +13,6 @@ public class ObjectController : ControllerBase
         _repository = repository;
     }
 
-    [HttpPost("PostObject")]
-    public async Task<IActionResult> CreateObject([FromBody] MyObjectDto dto)
-    {
-        if (dto == null)
-        {
-            return BadRequest("Object data is required.");
-        }
-
-        try
-        {
-            // Create object with IDs assigned inside the repo method
-            var createdObject = _repository.CreateObject(dto);
-
-            // Ensure nested ObjectProperties FK is correct (redundant if repo sets properly)
-            if (createdObject.ObjectProperties != null)
-            {
-                foreach (var prop in createdObject.ObjectProperties)
-                {
-                    prop.MyObjectObjectId = createdObject.ObjectId;
-                }
-            }
-
-            await _repository.SaveObjectAsync(createdObject);
-
-            return CreatedAtAction(nameof(GetObject), new { objectId = createdObject.ObjectId }, createdObject);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
-    }
-
     [HttpGet("all")]
     public async Task<IActionResult> GetAllObjects()
     {
@@ -95,6 +63,53 @@ public class ObjectController : ControllerBase
         }
     }
 
+    [HttpPost("PostObject")]
+    public async Task<IActionResult> CreateObject([FromBody] MyObjectDto dto)
+    {
+        if (dto == null)
+        {
+            return BadRequest("Object data is required.");
+        }
+
+        try
+        {
+            // Create object with IDs assigned inside the repo method
+            var createdObject = _repository.CreateObject(dto);
+
+            // Ensure nested ObjectProperties FK is correct (redundant if repo sets properly)
+            if (createdObject.ObjectProperties != null)
+            {
+                foreach (var prop in createdObject.ObjectProperties)
+                {
+                    prop.MyObjectObjectId = createdObject.ObjectId;
+                }
+            }
+
+            await _repository.SaveObjectAsync(createdObject);
+
+            return CreatedAtAction(nameof(GetObject), new { objectId = createdObject.ObjectId }, createdObject);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    [HttpPost("create-test-data")]
+    public async Task<IActionResult> RunCreateTestData()
+    {
+        try
+        {
+            var testData = await _repository.CreateTestData();       // Create the objects
+            await _repository.SaveManyObjectsAsync(testData);        // Save to DB
+            return Ok(testData);                                     // Return the created objects
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error generating test data: {ex.Message}");
+        }
+    }
+
     [HttpPut("{objectId}")]
     public async Task<IActionResult> UpdateObject(Guid objectId, [FromBody] UpdateObjectDto dto)
     {
@@ -115,21 +130,6 @@ public class ObjectController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
-    }
-
-    [HttpPost("create-test-data")]
-    public async Task<IActionResult> RunCreateTestData()
-    {
-        try
-        {
-            var testData = await _repository.CreateTestData();       // Create the objects
-            await _repository.SaveManyObjectsAsync(testData);        // Save to DB
-            return Ok(testData);                                     // Return the created objects
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Error generating test data: {ex.Message}");
         }
     }
 

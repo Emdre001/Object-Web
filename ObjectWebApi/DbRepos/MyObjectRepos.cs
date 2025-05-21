@@ -42,8 +42,25 @@ public class ObjectRepository
 {
     var ObjList = new List<MyObject>();
 
+    // Define coordinates
+    var coordinates = new (string Latitude, string Longitude)[]
+    {
+        ("59.338657", "18.060923"),
+        ("59.315567", "18.075075"),
+        ("59.337479", "18.071361"),
+        ("59.335222", "18.034924"),
+        ("59.290282", "18.080075"),
+        ("59.317916", "18.031948"),
+        ("59.317090", "18.055342"),
+        ("59.315074", "18.205944"),
+        ("57.720252", "11.973677"),
+        ("57.721092", "12.011822")
+    };
+
     for (int i = 0; i < 10; i++)
     {
+        var (latitude, longitude) = coordinates[i];
+
         MyObject company = new MyObject
         {
             ObjectId = Guid.NewGuid(),
@@ -51,9 +68,9 @@ public class ObjectRepository
             ObjectType = "Company",
         };
 
-        company.ObjectProperties.Add(new ObjectProperties{ ObjectId = company.ObjectId, Field = "Homepage", Value = $"www.company{i}.se"});
-        company.ObjectProperties.Add(new ObjectProperties{ ObjectId = company.ObjectId, Field = "Longitude", Value = "" });
-        company.ObjectProperties.Add(new ObjectProperties{ ObjectId = company.ObjectId, Field = "Latitude", Value = ""});
+        company.ObjectProperties.Add(new ObjectProperties { ObjectId = company.ObjectId, Field = "Homepage", Value = $"www.company{i}.se" });
+        company.ObjectProperties.Add(new ObjectProperties { ObjectId = company.ObjectId, Field = "Longitude", Value = longitude });
+        company.ObjectProperties.Add(new ObjectProperties { ObjectId = company.ObjectId, Field = "Latitude", Value = latitude });
         ObjList.Add(company);
 
         for (int j = 0; j < 5; j++)
@@ -71,7 +88,7 @@ public class ObjectRepository
             person.ObjectProperties.Add(new ObjectProperties { ObjectId = person.ObjectId, Field = "E-Mail", Value = $"person{j}@company{i}.com" });
             person.ObjectProperties.Add(new ObjectProperties { ObjectId = person.ObjectId, Field = "Registration Date", Value = "2000-01-01" });
 
-            company.Childrens.Add(person);  // renamed Childrens to Children
+            company.Childrens.Add(person);
             person.Parents.Add(company);
 
             ObjList.Add(person);
@@ -79,27 +96,28 @@ public class ObjectRepository
     }
 
     for (int k = 0; k < 5; k++)
+    {
+        MyObject myEvent = new MyObject
         {
-            MyObject myEvent = new MyObject
-            {
-                ObjectId = Guid.NewGuid(),
-                ObjectName = $"Event {k + 1}",
-                ObjectType = "Event",
-            };
+            ObjectId = Guid.NewGuid(),
+            ObjectName = $"Event {k + 1}",
+            ObjectType = "Event",
+        };
 
-            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "EventTitle", Value = $"Event Title {k + 1}" });
-            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "Location", Value = "Stockholm" });
-            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "EventText", Value = $"Event {k + 1}" });
-            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "StartTime", Value = "17.00" });
-            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "StopTime", Value = "22.00" });
-            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "EventDate", Value = $"2025-05-0{k + 1}" });
-            myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "AllDayEvent", Value = "False" });
+        myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "EventTitle", Value = $"Event Title {k + 1}" });
+        myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "Location", Value = "Stockholm" });
+        myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "EventText", Value = $"Event {k + 1}" });
+        myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "StartTime", Value = "17.00" });
+        myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "StopTime", Value = "22.00" });
+        myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "EventDate", Value = $"2025-05-0{k + 1}" });
+        myEvent.ObjectProperties.Add(new ObjectProperties { ObjectId = myEvent.ObjectId, Field = "AllDayEvent", Value = "False" });
 
-            ObjList.Add(myEvent);
-        }
+        ObjList.Add(myEvent);
+    }
 
-    return ObjList;  // <-- Return after loop finishes
+    return ObjList;
 }
+
 
     public async Task<bool> UpdateObjectAsync(UpdateObjectDto dto)
     {
