@@ -6,7 +6,7 @@ import { NewPersonForm } from './pages/NewPersonForm';
 import { ObjectPage } from './pages/Object';
 import { EditObjectPage } from './pages/EditObject';
 import { NotFound } from './pages/NotFound';
-import AppInitializer from './pages/AppInitializer';
+import AppInitializer from './components/AppInitializer';
 import CalendarPage from "./pages/Calendar";
 import './styles/App.css';
 
