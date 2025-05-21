@@ -39,8 +39,6 @@ export function ObjectPage() {
     console.error('Error fetching children:', err);
   }
 };
-
-
     fetchObject();
     fetchChildren();
   }, [objectID]);

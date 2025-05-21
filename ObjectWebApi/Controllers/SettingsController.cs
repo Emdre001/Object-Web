@@ -4,7 +4,6 @@ using System.Text.Json;
 using DbContext;
 using Microsoft.EntityFrameworkCore;
 
-
 [ApiController]
 [Route("api/[controller]")]
 public class SettingsController : ControllerBase
@@ -18,8 +17,7 @@ public class SettingsController : ControllerBase
         _context = context;
     }
 
-    // GET all settings
-    [HttpGet]
+    [HttpGet]  // GET all settings
     public async Task<IActionResult> GetAllSettings()
     {
         var entities = await _context.Settings.ToListAsync();
@@ -51,7 +49,6 @@ public class SettingsController : ControllerBase
 
         return Ok(results);
     }
-
 
     // GET specific settings by SettingsId
     [HttpGet("{id:guid}")]
@@ -89,7 +86,7 @@ public class SettingsController : ControllerBase
         var settingsId = Guid.NewGuid(); // Generate a new unique SettingsId
 
         // Set SettingEntityName based on logic (for example, using the first application's Name or other properties)
-        var settingEntityName = settings.Applications.FirstOrDefault()?.Name ?? "Enter Name Here"; // Example logic
+        var settingEntityName = settings.Applications.FirstOrDefault()?.Name ?? "Enter Name Here"; 
 
         // Serialize settings to JSON data
         var jsonData = JsonSerializer.Serialize(settings);
@@ -104,7 +101,7 @@ public class SettingsController : ControllerBase
 
         // Add the SettingsEntity to the DbContext and save it to the database
         _context.Settings.Add(settingsEntity);
-        await _context.SaveChangesAsync(); // Persist the new SettingsEntity
+        await _context.SaveChangesAsync(); 
 
         // Save the settings using the repository method
         await _repo.SaveSettingsAsync(settingsId, settings);
@@ -141,7 +138,7 @@ public class SettingsController : ControllerBase
         };
 
         ObjectType company = new ObjectType { Name = "Company" };
-        company.ListViewer = "Default";
+        company.ListViewer = "Map";
         company.Fields.Add(new Field { FieldName = "Homepage", Editor = "Text", Defaults = "" });
         company.Fields.Add(new Field { FieldName = "Longitude", Editor = "Text", Defaults = "" });
         company.Fields.Add(new Field { FieldName = "Latitude", Editor = "Text", Defaults = "" });
@@ -189,7 +186,6 @@ public class SettingsController : ControllerBase
 
         return CreatedAtAction(nameof(GetSetting), new { id = settingsId }, settings);
     }
-
 
     // GET test settings
     [HttpGet("getDemoSetting")]

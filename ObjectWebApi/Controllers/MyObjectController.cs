@@ -7,7 +7,6 @@ using DTO;
 public class ObjectController : ControllerBase
 {
     private readonly ObjectRepository _repository;
-
     public ObjectController(ObjectRepository repository)
     {
         _repository = repository;
@@ -110,7 +109,7 @@ public class ObjectController : ControllerBase
             if (!success)
                 return NotFound($"Object with ID {objectId} not found.");
 
-            return NoContent(); // 204 success
+            return NoContent(); 
         }
         catch (Exception ex)
         {

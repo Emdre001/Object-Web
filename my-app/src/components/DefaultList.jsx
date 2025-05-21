@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import '../styles/list.css';
 
 export function DefaultList({
-  objectType,
   appID,
   objects,
   fields,

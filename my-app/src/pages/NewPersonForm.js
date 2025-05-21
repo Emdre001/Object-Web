@@ -148,7 +148,6 @@ export function NewPersonForm() {
       <h2>Create new {objectType}</h2>
       {error && <div className="error">{error}</div>}
       <form onSubmit={handleSubmit} noValidate>
-        {/* ObjectName */}
         <div>
           <label>Object Name: *</label>
           <input

@@ -73,12 +73,6 @@ export function ListPage() {
     fetchData();
   }, [objectType, appID, MapListViewer]);
 
-  function getValueFromField(obj, field) {
-    const props = getPropertiesArray(obj.objectProperties);
-    const match = props.find(p => p.field === field);
-    return match?.value ?? '';
-  }
-
   function handleSort(field) {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -164,24 +158,24 @@ export function ListPage() {
   </div>
 );
 
-
-// Deep dereferencing function for $ref/$id JSON
-function dereference(obj) {
-  const idMap = new Map();
-  function traverse(current) {
-    if (current && typeof current === 'object') {
-      if (current.$ref) return idMap.get(current.$ref);
-      if (current.$id) idMap.set(current.$id, current);
-      if (Array.isArray(current.$values)) {
-        return current.$values.map(traverse);
-      } else {
-        for (const key in current) {
-          current[key] = traverse(current[key]);
+  // Deep dereferencing function for $ref/$id JSON
+  function dereference(obj) {
+    const idMap = new Map();
+    function traverse(current) {
+      if (current && typeof current === 'object') {
+        if (current.$ref) return idMap.get(current.$ref);
+        if (current.$id) idMap.set(current.$id, current);
+        if (Array.isArray(current.$values)) {
+          return current.$values.map(traverse);
+        } else {
+          for (const key in current) {
+            current[key] = traverse(current[key]);
+          }
         }
       }
+      return current;
     }
-    return current;
+    return traverse(obj);
   }
-  return traverse(obj);
-}
+
 }

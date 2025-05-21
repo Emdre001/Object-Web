@@ -21,37 +21,37 @@ public class SettingsRepository
     }
 
     public async Task SaveSettingsAsync(Guid settingsId, Settings settings)
-{
-    // Assign a new AppId to any application that doesn't have one
-    foreach (var app in settings.Applications)
     {
-        if (app.AppId == Guid.Empty)
+        // Assign a new AppId to any application that doesn't have one
+        foreach (var app in settings.Applications)
         {
-            app.AppId = Guid.NewGuid();
+            if (app.AppId == Guid.Empty)
+            {
+                app.AppId = Guid.NewGuid();
+            }
         }
-    }
 
-    var options = new JsonSerializerOptions { WriteIndented = true };
-    var json = JsonSerializer.Serialize(settings, options);
+        var options = new JsonSerializerOptions { WriteIndented = true };
+        var json = JsonSerializer.Serialize(settings, options);
 
-    var entity = await _context.Settings.FindAsync(settingsId);
+        var entity = await _context.Settings.FindAsync(settingsId);
 
-    if (entity != null)
-    {
-        entity.JsonData = json;
-        _context.Settings.Update(entity);
-    }
-    else
-    {
-        _context.Settings.Add(new SettingsEntity
+        if (entity != null)
         {
-            SettingsId = settingsId,
-            JsonData = json
-        });
-    }
+            entity.JsonData = json;
+            _context.Settings.Update(entity);
+        }
+        else
+        {
+            _context.Settings.Add(new SettingsEntity
+            {
+                SettingsId = settingsId,
+                JsonData = json
+            });
+        }
 
-    await _context.SaveChangesAsync();
-}
+        await _context.SaveChangesAsync();
+    }
 
     public async Task DeleteSettingsAsync(Guid settingsId)
     {
@@ -64,13 +64,13 @@ public class SettingsRepository
     }
     
     public async Task DeleteAllSettingsAsync()
-{
-    var allSettings = await _context.Settings.ToListAsync();
-    if (allSettings.Any())
     {
-        _context.Settings.RemoveRange(allSettings);
-        await _context.SaveChangesAsync();
+        var allSettings = await _context.Settings.ToListAsync();
+        if (allSettings.Any())
+        {
+            _context.Settings.RemoveRange(allSettings);
+            await _context.SaveChangesAsync();
+        }
     }
-}
 
 }

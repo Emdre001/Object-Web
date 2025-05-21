@@ -6,7 +6,6 @@ import 'leaflet/dist/leaflet.css';
 import '../styles/list.css';
 import { ZoomControl } from 'react-leaflet';
 
-
 // Fix default marker icon issues with Webpack
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({

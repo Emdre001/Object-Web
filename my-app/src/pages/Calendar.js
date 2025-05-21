@@ -29,8 +29,6 @@ useEffect(() => {
   }));
 }, [selectedDate, formattedDate]);
 
-  
-
   const fetchEvents = () => {
     axios.get("http://localhost:5291/api/Object/by-type/event")
       .then(response => {
@@ -101,7 +99,6 @@ useEffect(() => {
     if(!formValues.objectName || formValues.objectName.trim() === ""){
       errors.objectName = "Object name is required";
     }
-    // Add more validations if needed
     return errors;
   };
 

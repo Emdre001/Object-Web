@@ -157,7 +157,7 @@ export function EditObjectPage() {
       const editor = field.editor?.toLowerCase();
   
       if (editor === 'checkbox') {
-        const values = form.getAll(label); // flera val
+        const values = form.getAll(label); 
         properties.push({
           field: label,
           value: values.join(','),
@@ -197,7 +197,7 @@ export function EditObjectPage() {
       setTimeout(() => {
         setSaved(false);
         navigate(-1); 
-      }, 1500); // Fördröjning på 1,5 sekunder så användaren hinner se framgångsmeddelandet
+      }, 1500); 
   
     } catch (err) {
       setSaveError(err.message);
@@ -208,7 +208,6 @@ export function EditObjectPage() {
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="error">{error}</div>;
   
-
   return (
     <div className="edit-page">
       <h2>Edit {objectData?.objectType} (ID: {objectID})</h2>

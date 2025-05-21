@@ -49,8 +49,4 @@ function AppLayout() {
   );
 }
 
-function isValidAppID(id) {
-  return !!id && id.length > 2;
-}
-
 export default AppLayout;

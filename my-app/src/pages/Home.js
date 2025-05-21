@@ -59,7 +59,6 @@ export function HomePage() {
     )}
   </div>
 );
-
 }
 
 function dereference(obj) {
